@@ -18,11 +18,12 @@ import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import classnames from "classnames";
 import Input from "@material-ui/core/Input";
-
+import Search from "@material-ui/icons/Search";
+import CustomInput from "components/CustomInput/CustomInput.js";
+import Button from "components/CustomButtons/Button.js";
 import Visibility from "@material-ui/icons/Visibility";
 import Close from "@material-ui/icons/Close";
-import axios from "axios";
-import Pagination from '@material-ui/lab/Pagination';
+import Popover from '@material-ui/core/Popover';
 
 const styles = {
   cardCategoryWhite: {
@@ -76,102 +77,9 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useStyles = makeStyles(styles);
 
-let user = localStorage.getItem('access_token');
-
-export default function Shops() {
+ 
+export default function Admins() {
   const classes = useStyles();
-
-  const [shops, setShops] = React.useState([]);
-
-  React.useEffect(()=>{
-
-    getShops();
-
-  },[])
-
-
-  function getShops(page=1){
-    console.log("page:",page)
-    axios.get("http://martek.herokuapp.com/api/admin/fetch-shops?page="+page+"",
-    {headers:{"Authorization":`Bearer ${user}`}})
-    .then(res=>{
-      console.log(res.data)
-        setShops(res.data);
-    })
-    .catch(error=>{
-      console.log(error)
-    });
-}
-
-function renderShops(){
-  const {data, meta} = shops;
-  console.log(data)
-  return(
-  <React.Fragment>
-      {data && data.map(shop=>{
-      return(
-      <StyledTableRow key={shop.id}>
-            <StyledTableCell align="center">{shop.id}</StyledTableCell>
-            <StyledTableCell align="center">{shop.company_name}</StyledTableCell>
-            <StyledTableCell align="center">{shop.campus.campus}</StyledTableCell>
-            <StyledTableCell align="center">{shop.campus.created_at}</StyledTableCell>
-            <StyledTableCell align="center">{shop.campus.updated_at}</StyledTableCell>
-            <StyledTableCell align="center" className={classes.tableActions}>
-        <Tooltip
-          id="tooltip-top"
-          title="View Shop"
-          placement="top"
-          classes={{ tooltip: classes.tooltip }}
-        >
-          <IconButton
-            aria-label="Edit"
-            className={classes.tableActionButton}
-          >
-            <Visibility
-              color="primary"
-              className={
-                classes.tableActionButtonIcon + " " + classes.edit
-              }
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip
-          id="tooltip-top-start"
-          title="Delete Shop"
-          placement="top"
-          classes={{ tooltip: classes.tooltip }}
-        >
-          <IconButton
-            color="secondary"
-            aria-label="Close"
-            className={classes.tableActionButton}
-          >
-            <Close
-              className={
-                classes.tableActionButtonIcon + " " + classes.close
-              }
-            />
-          </IconButton>
-        </Tooltip>
-      </StyledTableCell>
-          </StyledTableRow>
-      )})}
-  <GridContainer>
-  <GridItem md={12}>
-    <Pagination
-      count={meta&&meta.lastpage}
-      page={meta&&meta.current_page}
-      onChange={(page)=>getShops(page)}
-      showFirstButton={true}
-      showLastButton={true}
-    />
-  </GridItem>
-  </GridContainer>
-  </React.Fragment>
-)
-
-}
-
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -180,7 +88,7 @@ function renderShops(){
           <GridContainer>
             <GridItem xs={6} sm={6} md={6} lg={6}>
             <h4 className={classes.cardTitleWhite}>
-              All users registered on Martek
+              All Admins 
             </h4>
             </GridItem>
             <GridItem  xs={6} sm={6} md={6} lg={6}>
@@ -191,23 +99,68 @@ function renderShops(){
             />
             </GridItem>
           </GridContainer>
+            
+
+            
           </CardHeader>
           <CardBody>
           <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell align="center">Shop Id</StyledTableCell>
+                <StyledTableCell align="center">User Id</StyledTableCell>
                 <StyledTableCell align="center">Name</StyledTableCell>
                 <StyledTableCell align="center">Campus</StyledTableCell>
-                <StyledTableCell align="center">Created At</StyledTableCell>
-                <StyledTableCell align="center">Updated At </StyledTableCell>
+                <StyledTableCell align="center">Date Created </StyledTableCell>
                 <StyledTableCell align="center">Action</StyledTableCell>
                
               </TableRow>
             </TableHead>
             <TableBody>
-            {shops && renderShops()}
+                <StyledTableRow >
+                  <StyledTableCell align="center">1</StyledTableCell>
+                  <StyledTableCell align="center">Gideon Assafuah</StyledTableCell>
+                  <StyledTableCell align="center">KNUST</StyledTableCell>
+                  <StyledTableCell align="center">23/09/2020</StyledTableCell>
+                  <StyledTableCell align="center" className={classes.tableActions}>
+              <Tooltip
+                id="tooltip-top"
+                title="View User"
+                placement="top"
+                classes={{ tooltip: classes.tooltip }}
+              >
+                <IconButton
+                  aria-label="Edit"
+                  className={classes.tableActionButton}
+                >
+                  <Visibility
+                    color="primary"
+                    className={
+                      classes.tableActionButtonIcon + " " + classes.edit
+                    }
+                  />
+                </IconButton>
+              </Tooltip>
+              <Tooltip
+                id="tooltip-top-start"
+                title="Delete User"
+                placement="top"
+                classes={{ tooltip: classes.tooltip }}
+              >
+                <IconButton
+                  color="secondary"
+                  aria-label="Close"
+                  className={classes.tableActionButton}
+                >
+                  <Close
+                    className={
+                      classes.tableActionButtonIcon + " " + classes.close
+                    }
+                  />
+                </IconButton>
+              </Tooltip>
+            </StyledTableCell>
+                </StyledTableRow>
             </TableBody>
           </Table>
         </TableContainer>

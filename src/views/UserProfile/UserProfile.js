@@ -14,6 +14,8 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import Input from "@material-ui/core/Input";
+import LoadingOverlay from 'react-loading-overlay';
+import PulseLoader from "react-spinners/PulseLoader";
 
 import avatar from "assets/img/faces/marc.jpg";
 import axios from "axios";
@@ -43,19 +45,22 @@ export default function UserProfile() {
   const[name, setName] = React.useState("");
   const[email, setEmail] = React.useState("");
   const[phone, setPhone] = React.useState("");
+  const [role, setRole] = React.useState("");
+  const [isActive, setIsActive] = React.useState(false);
 
   React.useEffect(()=>{
+    setIsActive(true)
     axios.get("https://martek.herokuapp.com/api/admin",
-    {headers:{ 'Authorization':`Bearer ${user}`}})
+  {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
       setName(res.data.name)
       setEmail(res.data.email)
-      setPhone(res.data.phone)
+      setPhone(res.data.phone);
+      setRole(res.data.role)
+      setIsActive(false);
     })
-    .catch(error=>{
-      console.log(error)
-    })
+    
   },[])
 
   const handleUpdate=()=>{
@@ -64,12 +69,17 @@ export default function UserProfile() {
   const classes = useStyles();
   return (
     <div>
+    <LoadingOverlay
+    active={isActive}
+    spinner={<PulseLoader color={'#4071e1'}/>}
+    color
+    >
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
               <h4 className={classes.cardTitleWhite}>Edit Profile</h4>
-              <p className={classes.cardCategoryWhite}>Complete your profile</p>
+              <p className={classes.cardCategoryWhite}>Update your profile</p>
             </CardHeader>
             <CardBody>
               <GridContainer>
@@ -103,6 +113,17 @@ export default function UserProfile() {
                   />
                 </GridItem>
               </GridContainer>
+              <GridContainer>
+                
+                <GridItem xs={12} sm={12} md={6}>
+                  <Input
+                    placeholder="Role"
+                    value={role}
+                   style={{width:"100%",marginBottom:"40px"}}
+                   disabled
+                  />
+                </GridItem>
+              </GridContainer>
             </CardBody>
             <CardFooter>
               <Button color="primary" onClick={()=>handleUpdate()}>Update Profile</Button>
@@ -128,6 +149,7 @@ export default function UserProfile() {
           </Card>
         </GridItem>
       </GridContainer>
+      </LoadingOverlay>
     </div>
   );
 }

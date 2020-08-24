@@ -1,13 +1,28 @@
 import React from "react";
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+import classnames from "classnames";
+import Input from "@material-ui/core/Input";
+
+import Visibility from "@material-ui/icons/Visibility";
+import Close from "@material-ui/icons/Close";
+import axios from "axios";
+import Pagination from '@material-ui/lab/Pagination';
 
 const styles = {
   cardCategoryWhite: {
@@ -36,47 +51,168 @@ const styles = {
       fontWeight: "400",
       lineHeight: "1"
     }
-  }
+  },
+  table: {
+    minWidth: 700,
+  },
 };
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    color: theme.palette.common.black,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
 
 const useStyles = makeStyles(styles);
 
+let user = localStorage.getItem('access_token');
+
 export default function Users() {
   const classes = useStyles();
+
+  const [users, setUsers] = React.useState([]);
+
+  React.useEffect(()=>{
+
+    getUsers();
+
+  },[])
+
+
+  function getUsers(page=1){
+    console.log("page:",page)
+    axios.get("http://martek.herokuapp.com/api/admin/fetch-users?page="+page+"",
+    {headers:{"Authorization":`Bearer ${user}`}})
+    .then(res=>{
+      console.log(res.data)
+        setUsers(res.data);
+    })
+    .catch(error=>{
+      console.log(error)
+    });
+}
+
+function renderUsers(){
+  const {data, meta} = users;
+  console.log(data)
+  return(
+  <React.Fragment>
+      {data && data.map(item=>{
+      return(
+      <StyledTableRow key={item.id}>
+            <StyledTableCell align="center">{item.id}</StyledTableCell>
+            <StyledTableCell align="center">{item.name}</StyledTableCell>
+            <StyledTableCell align="center">{item.email}</StyledTableCell>
+            <StyledTableCell align="center">{item.phone}</StyledTableCell>
+            <StyledTableCell align="center">{item.campus.campus}</StyledTableCell>
+            <StyledTableCell align="center">{item.campus.created_at}</StyledTableCell>
+            <StyledTableCell align="center" className={classes.tableActions}>
+        <Tooltip
+          id="tooltip-top"
+          title="View User"
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+        >
+          <IconButton
+            aria-label="Edit"
+            className={classes.tableActionButton}
+          >
+            <Visibility
+              color="primary"
+              className={
+                classes.tableActionButtonIcon + " " + classes.edit
+              }
+            />
+          </IconButton>
+        </Tooltip>
+        <Tooltip
+          id="tooltip-top-start"
+          title="Delete User"
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+        >
+          <IconButton
+            color="secondary"
+            aria-label="Close"
+            className={classes.tableActionButton}
+          >
+            <Close
+              className={
+                classes.tableActionButtonIcon + " " + classes.close
+              }
+            />
+          </IconButton>
+        </Tooltip>
+      </StyledTableCell>
+          </StyledTableRow>
+      )})}
+  {/* <GridContainer>
+  <GridItem md={12}>
+    <Pagination
+      count={meta&&meta.lastpage}
+      page={meta&&meta.current_page}
+      onChange={(page)=>getUsers(page)}
+      showFirstButton={true}
+      showLastButton={true}
+    />
+  </GridItem>
+  </GridContainer> */}
+  </React.Fragment>
+)
+
+}
+
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         <Card plain>
           <CardHeader plain color="primary">
+          <GridContainer>
+            <GridItem xs={6} sm={6} md={6} lg={6}>
             <h4 className={classes.cardTitleWhite}>
               All users registered on Martek
             </h4>
+            </GridItem>
+            <GridItem  xs={6} sm={6} md={6} lg={6}>
+            <Input
+              placeholder="Search"
+              type="search"
+              style={{color:"white"}}
+            />
+            </GridItem>
+          </GridContainer>
           </CardHeader>
           <CardBody>
-            <Table
-              tableHeaderColor="primary"
-              tableHead={["ID", "Name", "Country", "City", "Salary"]}
-              tableData={[
-                ["1", "Dakota Rice", "$36,738", "Niger", "Oud-Turnhout"],
-                ["2", "Minerva Hooper", "$23,789", "Curaçao", "Sinaai-Waas"],
-                ["3", "Sage Rodriguez", "$56,142", "Netherlands", "Baileux"],
-                [
-                  "4",
-                  "Philip Chaney",
-                  "$38,735",
-                  "Korea, South",
-                  "Overland Park"
-                ],
-                [
-                  "5",
-                  "Doris Greene",
-                  "$63,542",
-                  "Malawi",
-                  "Feldkirchen in Kärnten"
-                ],
-                ["6", "Mason Porter", "$78,615", "Chile", "Gloucester"]
-              ]}
-            />
+          <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell align="center">User Id</StyledTableCell>
+                <StyledTableCell align="center">Name</StyledTableCell>
+                <StyledTableCell align="center">email</StyledTableCell>
+                <StyledTableCell align="center">Phone</StyledTableCell>
+                <StyledTableCell align="center"> Campus </StyledTableCell>
+                <StyledTableCell align="center"> Created_at </StyledTableCell>
+                <StyledTableCell align="center">Action</StyledTableCell>
+               
+              </TableRow>
+            </TableHead>
+            <TableBody>
+            {users && renderUsers()}
+            </TableBody>
+          </Table>
+        </TableContainer>
           </CardBody>
         </Card>
       </GridItem>

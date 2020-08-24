@@ -38,6 +38,7 @@ export default function Sidebar(props) {
         const whiteFontClasses = classNames({
           [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
         });
+        if(prop.invisible !== true){
         return (
           <NavLink
             to={prop.layout + prop.path}
@@ -70,7 +71,7 @@ export default function Sidebar(props) {
               />
             </ListItem>
           </NavLink>
-        );
+        );}
       })}
     </List>
   );

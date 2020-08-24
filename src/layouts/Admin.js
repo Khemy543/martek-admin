@@ -16,6 +16,7 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
 import bgImage from "assets/img/sidebar-1.jpg";
 import logo from "assets/img/martek.png";
+import ProtectedRoute from "../ProtectedRoute.js";
 
 let ps;
 
@@ -24,7 +25,7 @@ const switchRoutes = (
     {routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
-          <Route
+          <ProtectedRoute
             path={prop.layout + prop.path}
             component={prop.component}
             key={key}
@@ -33,7 +34,7 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Redirect from="/admin" to="/admin/dashboard" />
+    <Redirect from="*" to="/admin/dashboard" />
   </Switch>
 );
 
@@ -50,13 +51,7 @@ export default function Admin({ ...rest }) {
   const [fixedClasses, setFixedClasses] = React.useState("dropdown show");
   const [mobileOpen, setMobileOpen] = React.useState(false);
   
-  const handleFixedClick = () => {
-    if (fixedClasses === "dropdown") {
-      setFixedClasses("dropdown show");
-    } else {
-      setFixedClasses("dropdown");
-    }
-  };
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };

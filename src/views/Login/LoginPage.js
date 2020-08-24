@@ -11,7 +11,6 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Input from "@material-ui/core/Input";
 import Button from "components/CustomButtons/Button.js";
-import {Form} from "@material-ui/core";
 
 const styles = {
   cardCategoryWhite: {
@@ -42,6 +41,7 @@ export default function LoginPage() {
 
   const handleSubmit=()=>{
       console.log("handling")
+      if(email !== "" && password !== ""){
       axios.post("https://martek.herokuapp.com/api/admin/auth/login",
       {
         email, password
@@ -50,12 +50,14 @@ export default function LoginPage() {
           console.log(res.data);
           if(res.data.statusCode === 200){
               localStorage.setItem('access_token',res.data.access_token);
+              window.location.reload("/");
 
           }
       })
       .catch(error=>{
           console.log(error)
       })
+    }
   }
 
   return (
@@ -72,6 +74,7 @@ export default function LoginPage() {
             <div>
             <Input
                 placeholder="Email"
+                type="text"
                 value={email}
                 onChange={e=>setEmail(e.target.value)}
                 style={{width:"90%"}}
@@ -84,13 +87,13 @@ export default function LoginPage() {
                 value={password}
                 onChange={e=>setPassword(e.target.value)}
                 style={{width:"90%"}}
-                
+                type="password"
                 required
                 />
             </div>
             </CardBody>
             <CardFooter>
-              <Button color="primary" onClick={()=>handleSubmit()} >SIGN</Button>
+              <Button color="primary"  onClick={()=>handleSubmit()} >SIGN</Button>
             </CardFooter>
           </Card>
           <p style={{textAlign:"center", fontSize:"11px", color:"#0066ffc2"}}>@martek 2020</p>

@@ -18,16 +18,19 @@ import Search from "@material-ui/icons/Search";
 // core components
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
-
+import decode from "jwt-decode"
+import { AdminConsumer } from "../../context.js";
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
+import history from "../../history.js";
 import axios from "axios";
 
 const useStyles = makeStyles(styles);
 let user = localStorage.getItem('access_token')
-export default function AdminNavbarLinks() {
+export default function AdminNavbarLinks(props) {
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
+
   const handleClickNotification = event => {
     if (openNotification && openNotification.contains(event.target)) {
       setOpenNotification(null);
@@ -49,13 +52,16 @@ export default function AdminNavbarLinks() {
     setOpenProfile(null);
   };
 
+
   const handleLogout=()=>{
+    setOpenProfile(null)
     axios.post("https://martek.herokuapp.com/api/admin/auth/logout",null,
     {headers:{ 'Authorization':`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
       if(res.data.message === "Successfully logged out"){
         localStorage.clear();
+        window.location.reload("/")
       }
     })
     .catch(error=>{
@@ -64,7 +70,7 @@ export default function AdminNavbarLinks() {
   }
   return (
     <div>
-      <div className={classes.searchWrapper}>
+     {/*  <div className={classes.searchWrapper}>
         <CustomInput
           formControlProps={{
             className: classes.margin + " " + classes.search
@@ -79,7 +85,7 @@ export default function AdminNavbarLinks() {
         <Button color="white" aria-label="edit" justIcon round>
           <Search />
         </Button>
-      </div>
+      </div> */}
       <div className={classes.manager}>
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
@@ -197,17 +203,37 @@ export default function AdminNavbarLinks() {
                 <ClickAwayListener onClickAway={handleCloseProfile}>
                   <MenuList role="menu">
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={()=>{history.push("/admin/user-profile"); setOpenProfile(null)}}
                       className={classes.dropdownItem}
                     >
                       Profile
                     </MenuItem>
-                    <MenuItem
-                      onClick={handleCloseProfile}
-                      className={classes.dropdownItem}
-                    >
-                      Settings
+                    <AdminConsumer>
+                      {value=>(
+                      <React.Fragment>
+                      {value.isSuperAdmin?
+                      <>
+                      <MenuItem
+                        onClick={()=>{history.push("/admin/create-admin");setOpenProfile(null)}}
+                        className={classes.dropdownItem}
+                      >
+                      Add Admin
                     </MenuItem>
+                    <MenuItem
+                        onClick={()=>{history.push("/admin/admins");setOpenProfile(null)}}
+                        className={classes.dropdownItem}
+                      >
+                      Admins
+                    </MenuItem>
+                    </>
+                    :
+                    <div>
+                    </div>
+                      }
+                      </React.Fragment>
+                      )}
+                    </AdminConsumer>
+
                     <Divider light />
                     <MenuItem
                       onClick={()=>handleLogout()}

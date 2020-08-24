@@ -28,13 +28,8 @@ export default function Footer(props) {
               </a>
             </ListItem>
             <ListItem className={classes.inlineBlock}>
-              <a href="#portfolio" className={classes.block}>
-                Portfolio
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a href="#blog" className={classes.block}>
-                Blog
+              <a href="https://martek-online.herokuapp.com" target="black" className={classes.block}>
+                Martek-online
               </a>
             </ListItem>
           </List>
@@ -42,14 +37,9 @@ export default function Footer(props) {
         <p className={classes.right}>
           <span>
             &copy; {1900 + new Date().getYear()}{" "}
-            <a
-              href="https://www.creative-tim.com?ref=mdr-footer"
-              target="_blank"
-              className={classes.a}
-            >
-              Creative Tim
+            <a>
+              martek online 
             </a>
-            , made with love for a better web
           </span>
         </p>
       </div>

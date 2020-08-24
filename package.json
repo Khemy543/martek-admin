@@ -7,10 +7,12 @@
   "dependencies": {
     "@material-ui/core": "4.10.0",
     "@material-ui/icons": "4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
     "axios": "^0.19.2",
     "chartist": "0.10.1",
     "classnames": "2.2.6",
     "history": "4.10.1",
+    "jwt-decode": "^2.2.0",
     "lodash": "^4.17.20",
     "perfect-scrollbar": "1.5.0",
     "prop-types": "15.7.2",
@@ -18,8 +20,11 @@
     "react-chartist": "0.14.3",
     "react-dom": "16.13.1",
     "react-google-maps": "9.4.5",
+    "react-js-pagination": "^3.0.3",
+    "react-loading-overlay": "^1.0.1",
     "react-router-dom": "5.2.0",
     "react-scripts": "^3.4.3",
+    "react-spinners": "^0.9.0",
     "react-swipeable-views": "0.13.9"
   },
   "scripts": {
@@ -43,7 +48,7 @@
   "bugs": {
     "url": "https://github.com/creativetimofficial/material-dashboard-react/issues"
   },
-  "homepage": "https://creativetimofficial.github.io/material-dashboard-react/#/dashboard",
+  "homepage": "https://martek-admin.herokuapp.com/",
   "optionalDependencies": {
     "@types/googlemaps": "3.39.6",
     "@types/markerclustererplus": "2.1.33",
