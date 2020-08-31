@@ -22,7 +22,11 @@ import Input from "@material-ui/core/Input";
 import Visibility from "@material-ui/icons/Visibility";
 import Close from "@material-ui/icons/Close";
 import axios from "axios";
-import Pagination from '@material-ui/lab/Pagination';
+import TablePagination from '@material-ui/core/TablePagination';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+import _ from "lodash";
 
 const styles = {
   cardCategoryWhite: {
@@ -54,7 +58,8 @@ const styles = {
   },
   table: {
     minWidth: 700,
-  },
+  }
+  
 };
 
 const StyledTableCell = withStyles((theme) => ({
@@ -78,99 +83,65 @@ const useStyles = makeStyles(styles);
 
 let user = localStorage.getItem('access_token');
 
-export default function Shops() {
+export default function Shops(props) {
   const classes = useStyles();
 
   const [shops, setShops] = React.useState([]);
+  const [page, setPage] = React.useState(1);
+  const [open, setOpen] = React.useState(false);
+
+
 
   React.useEffect(()=>{
 
-    getShops();
-
+    axios.get("http://martek.herokuapp.com/api/admin/fetch-shops",
+    {headers:{"Authorization":`Bearer ${user}`}})
+    .then(res=>{
+      console.log("test:", res.data);
+      setShops(res.data.data)
+    });
   },[])
 
 
-  function getShops(page=1){
-    console.log("page:",page)
-    axios.get("http://martek.herokuapp.com/api/admin/fetch-shops?page="+page+"",
+  function handleDeleteShop(id){
+    let tempShop = shops;
+    axios.delete("https://martek.herokuapp.com/api/admin/shop/"+id+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
-      console.log(res.data)
-        setShops(res.data);
+      console.log(res.data);
+      if(res.data.status === "shop deleted"){
+        tempShop.data = shops.data.filter(item=>item.id !== id);
+        console.log(tempShop)
+         setShops(tempShop)
+      }
     })
-    .catch(error=>{
-      console.log(error)
+  }
+
+   //search
+   function search(searchValue){
+    let newSearchValue = searchValue.toLowerCase();
+    let tempProducts = [...shops]
+    if(searchValue === ""){
+      console.log("im empty",tempProducts)
+    }
+    const search = _.filter(tempProducts, (item)=>{
+        return searchQuery(item, newSearchValue)
     });
+    
+    setShops(search)
+    
 }
 
-function renderShops(){
-  const {data, meta} = shops;
-  console.log(data)
-  return(
-  <React.Fragment>
-      {data && data.map(shop=>{
-      return(
-      <StyledTableRow key={shop.id}>
-            <StyledTableCell align="center">{shop.id}</StyledTableCell>
-            <StyledTableCell align="center">{shop.company_name}</StyledTableCell>
-            <StyledTableCell align="center">{shop.campus.campus}</StyledTableCell>
-            <StyledTableCell align="center">{shop.campus.created_at}</StyledTableCell>
-            <StyledTableCell align="center">{shop.campus.updated_at}</StyledTableCell>
-            <StyledTableCell align="center" className={classes.tableActions}>
-        <Tooltip
-          id="tooltip-top"
-          title="View Shop"
-          placement="top"
-          classes={{ tooltip: classes.tooltip }}
-        >
-          <IconButton
-            aria-label="Edit"
-            className={classes.tableActionButton}
-          >
-            <Visibility
-              color="primary"
-              className={
-                classes.tableActionButtonIcon + " " + classes.edit
-              }
-            />
-          </IconButton>
-        </Tooltip>
-        <Tooltip
-          id="tooltip-top-start"
-          title="Delete Shop"
-          placement="top"
-          classes={{ tooltip: classes.tooltip }}
-        >
-          <IconButton
-            color="secondary"
-            aria-label="Close"
-            className={classes.tableActionButton}
-          >
-            <Close
-              className={
-                classes.tableActionButtonIcon + " " + classes.close
-              }
-            />
-          </IconButton>
-        </Tooltip>
-      </StyledTableCell>
-          </StyledTableRow>
-      )})}
-  <GridContainer>
-  <GridItem md={12}>
-    <Pagination
-      count={meta&&meta.lastpage}
-      page={meta&&meta.current_page}
-      onChange={(page)=>getShops(page)}
-      showFirstButton={true}
-      showLastButton={true}
-    />
-  </GridItem>
-  </GridContainer>
-  </React.Fragment>
-)
+function searchQuery(item,newSearchValue){
+    const{company_name} = item;
+    const {campus} = item.campus
 
+    if((company_name.toLowerCase().includes(newSearchValue)) || (company_name.toUpperCase().includes(newSearchValue)) || (campus.toLowerCase().includes(newSearchValue)) || (campus.toUpperCase().includes(newSearchValue))){
+        return true;
+    }
+    return false;
 }
+
 
   return (
     <GridContainer>
@@ -188,6 +159,7 @@ function renderShops(){
               placeholder="Search"
               type="search"
               style={{color:"white"}}
+              onChange={(e)=>search(e.target.value)}
             />
             </GridItem>
           </GridContainer>
@@ -207,7 +179,56 @@ function renderShops(){
               </TableRow>
             </TableHead>
             <TableBody>
-            {shops && renderShops()}
+            {shops.map(shop=>(
+            <StyledTableRow key={shop.id}>
+            <StyledTableCell align="center">{shop.id}</StyledTableCell>
+            <StyledTableCell align="center">{shop.company_name}</StyledTableCell>
+            <StyledTableCell align="center">{shop.campus.campus}</StyledTableCell>
+            <StyledTableCell align="center">{shop.campus.created_at}</StyledTableCell>
+            <StyledTableCell align="center">{shop.campus.updated_at}</StyledTableCell>
+            <StyledTableCell align="center" className={classes.tableActions}>
+        <Tooltip
+          id="tooltip-top"
+          title="View Shop"
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+        >
+          <IconButton
+            aria-label="Edit"
+            className={classes.tableActionButton}
+            onClick = {()=>{props.history.push("/admin/shop-details",{id:shop.id})}}
+          >
+            <Visibility
+              color="primary"
+              className={
+                classes.tableActionButtonIcon + " " + classes.edit
+              }
+            />
+          </IconButton>
+        </Tooltip>
+        <Tooltip
+          id="tooltip-top-start"
+          title="Delete Shop"
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+        >
+          <IconButton
+            color="secondary"
+            aria-label="Close"
+            className={classes.tableActionButton}
+            onClick={()=>{handleDeleteShop(shop.id)}}
+          >
+            <Close
+              className={
+                classes.tableActionButtonIcon + " " + classes.close
+              }
+            />
+          </IconButton>
+          
+        </Tooltip>
+      </StyledTableCell>
+          </StyledTableRow>
+          ))}
             </TableBody>
           </Table>
         </TableContainer>

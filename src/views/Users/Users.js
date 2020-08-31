@@ -23,6 +23,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import Close from "@material-ui/icons/Close";
 import axios from "axios";
 import Pagination from '@material-ui/lab/Pagination';
+import _ from "lodash";
 
 const styles = {
   cardCategoryWhite: {
@@ -84,33 +85,84 @@ export default function Users() {
   const [users, setUsers] = React.useState([]);
 
   React.useEffect(()=>{
-
-    getUsers();
-
-  },[])
-
-
-  function getUsers(page=1){
-    console.log("page:",page)
-    axios.get("http://martek.herokuapp.com/api/admin/fetch-users?page="+page+"",
+    axios.get("http://martek.herokuapp.com/api/admin/fetch-users",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data)
-        setUsers(res.data);
+        setUsers(res.data.data);
     })
     .catch(error=>{
       console.log(error)
     });
+
+  },[])
+
+  //search
+  function search(searchValue){
+    let newSearchValue = searchValue.toLowerCase();
+    let tempProducts = [...users]
+   /*  if(searchValue === ""){
+      setUsers(tempProducts)
+    } */
+    const search = _.filter(tempProducts, (item)=>{
+        return searchQuery(item, newSearchValue)
+    });
+    
+    setUsers(search)
+    
 }
 
-function renderUsers(){
-  const {data, meta} = users;
-  console.log(data)
-  return(
-  <React.Fragment>
-      {data && data.map(item=>{
-      return(
-      <StyledTableRow key={item.id}>
+function searchQuery(item,newSearchValue){
+    const{name,email} = item;
+    const {campus} = item.campus
+
+    if((name.toLowerCase().includes(newSearchValue)) || (name.toUpperCase().includes(newSearchValue)) || (email.toLowerCase().includes(newSearchValue)) || (email.toUpperCase().includes(newSearchValue)|| (campus.toLowerCase().includes(newSearchValue)) || (campus.toUpperCase().includes(newSearchValue)))){
+        return true;
+    }
+    return false;
+}
+
+
+  return (
+    <GridContainer>
+      <GridItem xs={12} sm={12} md={12}>
+        <Card plain>
+          <CardHeader plain color="primary">
+          <GridContainer>
+            <GridItem xs={6} sm={6} md={6} lg={6}>
+            <h4 className={classes.cardTitleWhite}>
+              All users registered on Martek
+            </h4>
+            </GridItem>
+            <GridItem  xs={6} sm={6} md={6} lg={6}>
+            <Input
+              placeholder="Search"
+              type="search"
+              style={{color:"white"}}
+
+              onChange={(e)=>{search(e.target.value);console.log(e.target.value)}}
+            />
+            </GridItem>
+          </GridContainer>
+          </CardHeader>
+          <CardBody>
+          <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell align="center">User Id</StyledTableCell>
+                <StyledTableCell align="center">Name</StyledTableCell>
+                <StyledTableCell align="center">email</StyledTableCell>
+                <StyledTableCell align="center">Phone</StyledTableCell>
+                <StyledTableCell align="center"> Campus </StyledTableCell>
+                <StyledTableCell align="center"> Created_at </StyledTableCell>
+                <StyledTableCell align="center">Action</StyledTableCell>
+               
+              </TableRow>
+            </TableHead>
+            <TableBody>
+            {users.map(item=>(
+            <StyledTableRow key={item.id}>
             <StyledTableCell align="center">{item.id}</StyledTableCell>
             <StyledTableCell align="center">{item.name}</StyledTableCell>
             <StyledTableCell align="center">{item.email}</StyledTableCell>
@@ -156,60 +208,7 @@ function renderUsers(){
         </Tooltip>
       </StyledTableCell>
           </StyledTableRow>
-      )})}
-  {/* <GridContainer>
-  <GridItem md={12}>
-    <Pagination
-      count={meta&&meta.lastpage}
-      page={meta&&meta.current_page}
-      onChange={(page)=>getUsers(page)}
-      showFirstButton={true}
-      showLastButton={true}
-    />
-  </GridItem>
-  </GridContainer> */}
-  </React.Fragment>
-)
-
-}
-
-  return (
-    <GridContainer>
-      <GridItem xs={12} sm={12} md={12}>
-        <Card plain>
-          <CardHeader plain color="primary">
-          <GridContainer>
-            <GridItem xs={6} sm={6} md={6} lg={6}>
-            <h4 className={classes.cardTitleWhite}>
-              All users registered on Martek
-            </h4>
-            </GridItem>
-            <GridItem  xs={6} sm={6} md={6} lg={6}>
-            <Input
-              placeholder="Search"
-              type="search"
-              style={{color:"white"}}
-            />
-            </GridItem>
-          </GridContainer>
-          </CardHeader>
-          <CardBody>
-          <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell align="center">User Id</StyledTableCell>
-                <StyledTableCell align="center">Name</StyledTableCell>
-                <StyledTableCell align="center">email</StyledTableCell>
-                <StyledTableCell align="center">Phone</StyledTableCell>
-                <StyledTableCell align="center"> Campus </StyledTableCell>
-                <StyledTableCell align="center"> Created_at </StyledTableCell>
-                <StyledTableCell align="center">Action</StyledTableCell>
-               
-              </TableRow>
-            </TableHead>
-            <TableBody>
-            {users && renderUsers()}
+          ))}
             </TableBody>
           </Table>
         </TableContainer>

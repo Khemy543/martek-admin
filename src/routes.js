@@ -33,6 +33,10 @@ import NotificationsPage from "views/Notifications/Notifications.js";
 import AddAdmin from "views/AddAdmin/AddAdmin";
 import ChangePassword from "views/ChangePassword/ChangePassword";
 import Admins from "views/Admins/Admins";
+import Categories from "views/Products/Categories";
+import Products from "views/Products/Products.js"
+import ShopDetails from "views/Shops/ShopDetails"
+import ProductDetails from "views/Products/ProductDetails"
 
 const dashboardRoutes = [
   {
@@ -54,6 +58,37 @@ const dashboardRoutes = [
     name: "Shops",
     icon: StoreIcon,
     component: Shops,
+    layout: "/admin"
+  },
+  {
+    path: "/shop-details",
+    name: "Shop",
+    icon: StoreIcon,
+    invisible:true,
+    component: ShopDetails,
+    layout: "/admin"
+  },
+  {
+    path: "/categories",
+    name: "Products",
+    icon: LibraryBooks,
+    component: Categories,
+    layout: "/admin"
+  },
+  {
+    path: "/products",
+    name: "Products",
+    icon: LibraryBooks,
+    invisible:true,
+    component: Products,
+    layout: "/admin"
+  }, 
+  {
+    path: "/product-details",
+    name: "Products",
+    icon: LibraryBooks,
+    invisible:true,
+    component: ProductDetails,
     layout: "/admin"
   },
   {

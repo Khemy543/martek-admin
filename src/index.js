@@ -21,6 +21,7 @@ import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
 import history from "./history.js";
 import decode from "jwt-decode";
+import "./Index.css";
 
 // core components
 import Admin from "layouts/Admin.js";
