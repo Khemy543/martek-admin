@@ -19,6 +19,7 @@ import PulseLoader from "react-spinners/PulseLoader";
 
 import avatar from "assets/img/faces/marc.jpg";
 import axios from "axios";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = {
   cardCategoryWhite: {
@@ -69,12 +70,8 @@ export default function UserProfile() {
   const classes = useStyles();
   return (
     <div>
-    <LoadingOverlay
-    active={isActive}
-    spinner={<PulseLoader color={'#4071e1'}/>}
-    color
-    >
       <GridContainer>
+      {!isActive?
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
@@ -130,26 +127,12 @@ export default function UserProfile() {
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card profile>
-            <CardAvatar profile>
-              <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={avatar} alt="..." />
-              </a>
-            </CardAvatar>
-            <CardBody profile>
-              <h6 className={classes.cardCategory}>CEO / CO-FOUNDER</h6>
-              <h4 className={classes.cardTitle}>Alec Thompson</h4>
-              <p className={classes.description}>
-                Don{"'"}t be scared of the truth because we need to restart the
-                human foundation in truth And I love you like Kanye loves Kanye
-                I love Rick Owens’ bed design but the back is...
-              </p>
-            </CardBody>
-          </Card>
-        </GridItem>
+        :
+        <GridItem md={6} style={{marginLeft:"auto",marginRight:"auto",fontWeight:"bold"}}>
+     Please Wait <CircularProgress style={{width:"15px",height:"15px",marginLeft:"5px"}}/>
+      </GridItem>
+      }
       </GridContainer>
-      </LoadingOverlay>
     </div>
   );
 }

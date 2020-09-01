@@ -23,13 +23,14 @@ import GroupIcon from '@material-ui/icons/Group';
 import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
 import StoreIcon from '@material-ui/icons/Store';
+import PaletteIcon from '@material-ui/icons/Palette';
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import Users from "views/Users/Users.js";
 import Shops from "views/Shops/Shops.js";
-import Maps from "views/Maps/Maps.js";
-import NotificationsPage from "views/Notifications/Notifications.js";
+import Reports from "views/Reports/Report";
+import Ads from "views/Ads/Ads";
 import AddAdmin from "views/AddAdmin/AddAdmin";
 import ChangePassword from "views/ChangePassword/ChangePassword";
 import Admins from "views/Admins/Admins";
@@ -71,7 +72,7 @@ const dashboardRoutes = [
   {
     path: "/categories",
     name: "Products",
-    icon: LibraryBooks,
+    icon: PaletteIcon,
     component: Categories,
     layout: "/admin"
   },
@@ -103,14 +104,14 @@ const dashboardRoutes = [
     path: "/maps",
     name: "Reports",
     icon: LibraryBooks,
-    component: Maps,
+    component: Reports,
     layout: "/admin"
   },
   {
-    path: "/notifications",
+    path: "/manage-ads",
     name: "Ads Control",
     icon: Notifications,
-    component: NotificationsPage,
+    component: Ads,
     layout: "/admin"
   },
   {

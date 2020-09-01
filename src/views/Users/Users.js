@@ -24,8 +24,51 @@ import Close from "@material-ui/icons/Close";
 import axios from "axios";
 import Pagination from '@material-ui/lab/Pagination';
 import _ from "lodash";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Modal from '@material-ui/core/Modal';
+import Button from "components/CustomButtons/Button.js";
+import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 
 const styles = {
+ 
+};
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    color: theme.palette.common.black,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+
+
+const useStyles = makeStyles((theme)=>({
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
       color: "rgba(255,255,255,.62)",
@@ -56,26 +99,16 @@ const styles = {
   table: {
     minWidth: 700,
   },
-};
-
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    color: theme.palette.common.black,
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
 
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
-const useStyles = makeStyles(styles);
+}));
 
 let user = localStorage.getItem('access_token');
 
@@ -83,16 +116,23 @@ export default function Users() {
   const classes = useStyles();
 
   const [users, setUsers] = React.useState([]);
+  const [isActive ,setIsActive] = React.useState(false);
+  const [modalStyle] = React.useState(getModalStyle);
+  const [deleteId,setId]=React.useState(0)
+  const [open, setOpen] = React.useState(false);
+  const [blocked,setBlock]=React.useState(false)
 
   React.useEffect(()=>{
+    setIsActive(true)
     axios.get("http://martek.herokuapp.com/api/admin/fetch-users",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data)
-        setUsers(res.data.data);
+        setUsers(res.data);
+        setIsActive(false)
     })
     .catch(error=>{
-      console.log(error)
+      console.log(error.response.data)
     });
 
   },[])
@@ -122,9 +162,29 @@ function searchQuery(item,newSearchValue){
     return false;
 }
 
+function handleDeleteUser(){ 
+  let tempUsers = users;
+  console.log(deleteId)
+  setOpen(false)
+  axios.delete("http://martek.herokuapp.com/api/admin/user/"+deleteId+"/delete-account",
+  {headers:{"Authorization":`Bearer ${user}`}})
+  .then(res=>{
+    console.log(res.data);
+    if(res.data.status === "user deleted"){
+      let newUsers = tempUsers.filter(item=>item.id !== deleteId);
+      setUsers(newUsers)
+    }
+  })
+}
+
+const handleClose = () => {
+  setOpen(false);
+};
+
 
   return (
     <GridContainer>
+    {!isActive?
       <GridItem xs={12} sm={12} md={12}>
         <Card plain>
           <CardHeader plain color="primary">
@@ -188,6 +248,48 @@ function searchQuery(item,newSearchValue){
             />
           </IconButton>
         </Tooltip>
+        {!blocked?
+        <Tooltip
+          id="tooltip-top-block"
+          title="Block User"
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+        >
+        
+          <IconButton
+            color="secondary"
+            aria-label="Block"
+            className={classes.tableActionButton}
+          >
+            <LockIcon
+              color="secondary"
+              className={
+                classes.tableActionButtonIcon + " " + classes.edit
+              }
+            />
+          </IconButton>
+          </Tooltip>
+          :
+          <Tooltip
+          id="tooltip-top-unblock"
+          title="Unblock User"
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+          >
+          <IconButton
+            color="success"
+            aria-label="Unblock"
+            className={classes.tableActionButton}
+          >
+            <LockOpenIcon
+              color="success"
+              className={
+                classes.tableActionButtonIcon + " " + classes.edit
+              }
+            />
+          </IconButton>
+        </Tooltip>
+        }
         <Tooltip
           id="tooltip-top-start"
           title="Delete User"
@@ -198,6 +300,7 @@ function searchQuery(item,newSearchValue){
             color="secondary"
             aria-label="Close"
             className={classes.tableActionButton}
+            onClick={()=>{setOpen(true); setId(item.id)}}
           >
             <Close
               className={
@@ -206,7 +309,18 @@ function searchQuery(item,newSearchValue){
             />
           </IconButton>
         </Tooltip>
+        <Modal 
+        open={open}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        >
+             <div style={modalStyle} className={classes.paper}>
+              <h5 id="simple-modal-title">Do you want to delete user?</h5>
+              <Button color="danger" onClick={()=>handleDeleteUser()}>Yes</Button> <Button color="info" onClick={()=>setOpen(false)}>No</Button>
+             </div>
+        </Modal>
       </StyledTableCell>
+         
           </StyledTableRow>
           ))}
             </TableBody>
@@ -215,6 +329,11 @@ function searchQuery(item,newSearchValue){
           </CardBody>
         </Card>
       </GridItem>
+      :
+      <GridItem md={6} style={{marginLeft:"auto",marginRight:"auto",fontWeight:"bold"}}>
+     Please Wait <CircularProgress style={{width:"15px",height:"15px",marginLeft:"5px"}}/>
+      </GridItem>
+      }
     </GridContainer>
   );
 }

@@ -27,8 +27,43 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import _ from "lodash";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import Button from "components/CustomButtons/Button.js";
 
-const styles = {
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    color: theme.palette.common.black,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme)=>({
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
       color: "rgba(255,255,255,.62)",
@@ -58,28 +93,17 @@ const styles = {
   },
   table: {
     minWidth: 700,
-  }
-  
-};
-
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    color: theme.palette.common.black,
   },
-  body: {
-    fontSize: 14,
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
-}))(TableCell);
 
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
-const useStyles = makeStyles(styles);
+}));
 
 let user = localStorage.getItem('access_token');
 
@@ -89,30 +113,35 @@ export default function Shops(props) {
   const [shops, setShops] = React.useState([]);
   const [page, setPage] = React.useState(1);
   const [open, setOpen] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(false)
+  const [blocked,setBlock]=React.useState(false)
+  const [modalStyle] = React.useState(getModalStyle);
+  const [deletId, setDeleteId] = React.useState(0)
 
 
 
   React.useEffect(()=>{
-
+    setIsActive(true)
     axios.get("http://martek.herokuapp.com/api/admin/fetch-shops",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log("test:", res.data);
-      setShops(res.data.data)
+      setShops(res.data);
+      setIsActive(false)
     });
   },[])
 
 
-  function handleDeleteShop(id){
+  function handleDeleteShop(){
     let tempShop = shops;
-    axios.delete("https://martek.herokuapp.com/api/admin/shop/"+id+"/delete",
+    setOpen(false)
+    axios.delete("https://martek.herokuapp.com/api/admin/shop/"+deletId+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
       if(res.data.status === "shop deleted"){
-        tempShop.data = shops.data.filter(item=>item.id !== id);
-        console.log(tempShop)
-         setShops(tempShop)
+        let newShops = tempShop.filter(item=>item.id !== deletId);
+         setShops(newShops)
       }
     })
   }
@@ -120,9 +149,9 @@ export default function Shops(props) {
    //search
    function search(searchValue){
     let newSearchValue = searchValue.toLowerCase();
-    let tempProducts = [...shops]
+    let tempProducts = [...shops];
     if(searchValue === ""){
-      console.log("im empty",tempProducts)
+      console.log("im empty");
     }
     const search = _.filter(tempProducts, (item)=>{
         return searchQuery(item, newSearchValue)
@@ -145,6 +174,7 @@ function searchQuery(item,newSearchValue){
 
   return (
     <GridContainer>
+    {!isActive?
       <GridItem xs={12} sm={12} md={12}>
         <Card plain>
           <CardHeader plain color="primary">
@@ -206,6 +236,48 @@ function searchQuery(item,newSearchValue){
             />
           </IconButton>
         </Tooltip>
+        {!blocked?
+        <Tooltip
+          id="tooltip-top-block"
+          title="Block Shop"
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+        >
+        
+          <IconButton
+            color="secondary"
+            aria-label="Block"
+            className={classes.tableActionButton}
+          >
+            <LockIcon
+              color="secondary"
+              className={
+                classes.tableActionButtonIcon + " " + classes.edit
+              }
+            />
+          </IconButton>
+          </Tooltip>
+          :
+          <Tooltip
+          id="tooltip-top-unblock"
+          title="Unblock Shop"
+          placement="top"
+          classes={{ tooltip: classes.tooltip }}
+          >
+          <IconButton
+            color="success"
+            aria-label="Unblock"
+            className={classes.tableActionButton}
+          >
+            <LockOpenIcon
+              color="success"
+              className={
+                classes.tableActionButtonIcon + " " + classes.edit
+              }
+            />
+          </IconButton>
+        </Tooltip>
+        }
         <Tooltip
           id="tooltip-top-start"
           title="Delete Shop"
@@ -216,7 +288,7 @@ function searchQuery(item,newSearchValue){
             color="secondary"
             aria-label="Close"
             className={classes.tableActionButton}
-            onClick={()=>{handleDeleteShop(shop.id)}}
+            onClick={()=>{setOpen(true);setDeleteId(shop.id)}}
           >
             <Close
               className={
@@ -226,6 +298,16 @@ function searchQuery(item,newSearchValue){
           </IconButton>
           
         </Tooltip>
+        <Modal 
+        open={open}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        >
+             <div style={modalStyle} className={classes.paper}>
+              <h5 id="simple-modal-title">Do you want to delete shop?</h5>
+              <Button color="danger" onClick={()=>handleDeleteShop()}>Yes</Button> <Button color="info" onClick={()=>setOpen(false)}>No</Button>
+             </div>
+        </Modal>
       </StyledTableCell>
           </StyledTableRow>
           ))}
@@ -235,6 +317,10 @@ function searchQuery(item,newSearchValue){
           </CardBody>
         </Card>
       </GridItem>
+      :
+      <GridItem md={6} style={{marginLeft:"auto",marginRight:"auto",fontWeight:"bold"}}>
+     Please Wait <CircularProgress style={{width:"15px",height:"15px",marginLeft:"5px"}}/>
+      </GridItem>}
     </GridContainer>
   );
 }

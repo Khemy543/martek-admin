@@ -63,13 +63,13 @@ const styles = {
 
 const useStyles = makeStyles(styles);
  
-export default function Categories(props) {
+export default function Ads(props) {
     
   const classes = useStyles();
-  const [categories, setCategories] = React.useState([]);
+  const [ads, setAds] = React.useState([]);
   const [isActive, setIsActive] = React.useState(false);
 
-  React.useEffect(()=>{
+ /*  React.useEffect(()=>{
       setIsActive(true)
     axios.get("https://martek.herokuapp.com/api/categories")
     .then(res=>{
@@ -77,7 +77,7 @@ export default function Categories(props) {
         setCategories(res.data);
         setIsActive(false)
     })
-},[])
+},[]) */
 
   return (
     <GridContainer>
@@ -85,17 +85,14 @@ export default function Categories(props) {
       <GridItem xs={12} sm={12} md={12}>
       <Card>
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>Product Categories</h4>
-        <p className={classes.cardCategoryWhite}>
-         Select A Category To View Products
-        </p>
+        <h4 className={classes.cardTitleWhite}>Manage Ads</h4>
       </CardHeader>
       <CardBody>
         <GridContainer>
-        {categories.map((value)=>(
+        {ads.map((value)=>(
           <GridItem md="6">
-          <div  key={value.id} style={{cursor:"pointer"}} onClick={()=>{props.history.push("/admin/products",{id:value.id, name:value.category})}}>
-          <SnackbarContent  message={value.category} />
+          <div  key={value.id} style={{cursor:"pointer"}} >
+          <SnackbarContent  message={value.message} />
           </div>
           </GridItem>
         ))}

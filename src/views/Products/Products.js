@@ -26,8 +26,43 @@ import Close from "@material-ui/icons/Close";
 import Popover from '@material-ui/core/Popover';
 import axios from "axios";
 import Pagination from '@material-ui/lab/Pagination';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Modal from '@material-ui/core/Modal';
 
-const styles = {
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    color: theme.palette.common.black,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme)=>({
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
       color: "rgba(255,255,255,.62)",
@@ -58,26 +93,16 @@ const styles = {
   table: {
     minWidth: 700,
   },
-};
-
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    color: theme.palette.common.black,
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
 
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
-const useStyles = makeStyles(styles);
+}));
 
 
 let user = localStorage.getItem('access_token');
@@ -85,12 +110,16 @@ let user = localStorage.getItem('access_token');
 export default function Products(props) {
   const classes = useStyles();
   const [products, setProducts] = React.useState([]);
+  const [isActive, setIsActive] =React.useState(false)
+  const [modalStyle] = React.useState(getModalStyle);
+  const [deletId, setDeleteId] = React.useState(0)
+  const [open, setOpen] = React.useState(false);
 
 
   React.useEffect(()=>{
     axios.get("https://martek.herokuapp.com/api/category/"+props.location.state.id+"/products")
     .then(res=>{
-        console.log(res.data)
+        console.log(res.data);
     });
 
     getProducts();
@@ -98,19 +127,22 @@ export default function Products(props) {
 
 
   function getProducts(page=1){
+    setIsActive(true)
     console.log("page:",page)
     axios.get("https://martek.herokuapp.com/api/category/"+props.location.state.id+"/products?page="+page+"")
     .then(res=>{
       console.log(res.data)
         setProducts(res.data);
+        setIsActive(false)
     })
     .catch(error=>{
       console.log(error)
     });
 }
 
-function handleDeleteProduct(id){
-    axios.delete("https://martek.herokuapp.com/api/admin/product/"+id+"/delete",
+function handleDeleteProduct(){
+  setOpen(false)
+    axios.delete("https://martek.herokuapp.com/api/admin/product/"+deletId+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data)
@@ -159,7 +191,7 @@ function renderProducts(){
               color="secondary"
               aria-label="Close"
               className={classes.tableActionButton}
-              onClick={()=>handleDeleteProduct(value.id)}
+              onClick={()=>{setOpen(true); setDeleteId(value.id)}}
             >
               <Close
                 className={
@@ -168,6 +200,16 @@ function renderProducts(){
               />
             </IconButton>
           </Tooltip>
+          <Modal 
+            open={open}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            >
+                <div style={modalStyle} className={classes.paper}>
+                  <h5 id="simple-modal-title">Do you want to delete product?</h5>
+                  <Button color="danger" onClick={()=>handleDeleteProduct()}>Yes</Button> <Button color="info" onClick={()=>setOpen(false)}>No</Button>
+                </div>
+            </Modal>
         </StyledTableCell>
             </StyledTableRow>
         )})}
@@ -189,6 +231,7 @@ function renderProducts(){
 
   return (
     <GridContainer>
+    {!isActive?
       <GridItem xs={12} sm={12} md={12}>
         <Card plain>
           <CardHeader plain color="primary">
@@ -228,6 +271,10 @@ function renderProducts(){
           </CardBody>
         </Card>
       </GridItem>
+      :
+      <GridItem md={6} style={{marginLeft:"auto",marginRight:"auto",fontWeight:"bold"}}>
+     Please Wait <CircularProgress style={{width:"15px",height:"15px",marginLeft:"5px"}}/>
+      </GridItem>}
     </GridContainer>
   );
 }

@@ -47,6 +47,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import clsx from 'clsx';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -97,30 +98,42 @@ export default function ProductDetails(props) {
     const [detaisl,setDetails] = React.useState([]);
     const [reviews, setReviews] = React.useState([]);
     const [value, setValue] = React.useState('one');
+    const [average, setAverage] = React.useState(0)
     const [expanded, setExpanded] = React.useState(false);
+    const [isActive, setIsActive] = React.useState(false)
 
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-      };
+   
 
   React.useEffect(()=>{
+      setIsActive(true)
     axios.get("https://martek.herokuapp.com/api/product/"+props.location.state.id+"/details")
     .then(res=>{
         console.log(res.data);
-        setDetails(res.data)
+        setDetails(res.data);
+        setIsActive(false)
     });
 
     axios.get("https://martek.herokuapp.com/api/product/"+props.location.state.id+"/reviews")
     .then(res=>{
         console.log(res.data);
-        setReviews(res.data)
+        setReviews(res.data.product_reviews);
+        if(res.data.average_rating !== null){
+        setAverage(res.data.average_rating);
+        }
     })
     .catch(error=>{
         console.log(error)
     });
     
   },[])
-
+  
+  function handleReviewDelete(id){
+    axios.delete("https://martek.herokuapp.com/api/admin/product-review/"+id+"/delete",
+    {headers:{"Authorization":`Bearer ${user}`}})
+    .then(res=>{
+        console.log(res.data)
+    })
+}
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -165,6 +178,7 @@ export default function ProductDetails(props) {
   return (
     <div>
       <GridContainer>
+      {!isActive?
         <GridItem xs={12} sm={12} md={12}>
           <Card>
             <CardHeader color="primary">
@@ -176,6 +190,7 @@ export default function ProductDetails(props) {
                     <h4><span style={{fontWeight:"bold"}}>Product Description :</span>{description}</h4>
                     <h4><span style={{fontWeight:"bold"}}>In Stock :</span>{in_stock}</h4>
                     <h4><span style={{fontWeight:"bold"}}>Price :</span>{price}</h4>
+                    <h4><span style={{fontWeight:"bold"}}>Rate :</span>{average}</h4>
                   </GridItem>
               </GridContainer>
                <GridContainer style={{marginTop:"20px"}}>
@@ -187,50 +202,33 @@ export default function ProductDetails(props) {
                     <GridItem md={12}>
                     <TabPanel value={value} index="one">
                     <GridContainer>
-              
-                        <GridItem md={12}>
+                    <GridItem md={12}>
                         <TableContainer component={Paper}>
                         <Table className={classes.table} aria-label="customized table">
                             <TableHead>
                             <TableRow>
                                 <StyledTableCell align="center"> Id</StyledTableCell>
-                                <StyledTableCell align="center">Message</StyledTableCell>
-                                <StyledTableCell align="center">User</StyledTableCell>
-                                <StyledTableCell align="center">User Email</StyledTableCell>
+                                <StyledTableCell align="center">Name</StyledTableCell>
+                                <StyledTableCell align="center">message</StyledTableCell>
+                                <StyledTableCell align="center">Rate</StyledTableCell>
+                                <StyledTableCell align="center">time</StyledTableCell>
                                 <StyledTableCell align="center">Action</StyledTableCell>
                             
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {reviews.map(item=>(
-                            <StyledTableRow key={item.id}>
-                                    <StyledTableCell align="center">{item.id}</StyledTableCell>
-                                    <StyledTableCell align="center">{item.review}</StyledTableCell>
-                                    <StyledTableCell align="center">{item.user.name}</StyledTableCell>
-                                    <StyledTableCell align="center">{item.user.email}</StyledTableCell>
+                            {reviews.map(value=>(
+                            <StyledTableRow key={value.id}>
+                                    <StyledTableCell align="center">{value.id}</StyledTableCell>
+                                    <StyledTableCell align="center">{value.user.name}</StyledTableCell>
+                                    <StyledTableCell align="center">{value.review}</StyledTableCell>
+                                    <StyledTableCell align="center">{value.rating}</StyledTableCell>
+                                    <StyledTableCell align="center">{value.time}</StyledTableCell>
                                     <StyledTableCell align="center" className={classes.tableActions}>
-                                <Tooltip
-                                id="tooltip-top"
-                                title="View Shop"
-                                placement="top"
-                                classes={{ tooltip: classes.tooltip }}
-                                >
-                                <IconButton
-                                    aria-label="Edit"
-                                    className={classes.tableActionButton}
-                                    onClick = {()=>{props.history.push("/admin/shop-details",{id:item.id})}}
-                                >
-                                    <Visibility
-                                    color="primary"
-                                    className={
-                                        classes.tableActionButtonIcon + " " + classes.edit
-                                    }
-                                    />
-                                </IconButton>
-                                </Tooltip>
+                                
                                 <Tooltip
                                 id="tooltip-top-start"
-                                title="Delete Shop"
+                                title="Delete Review"
                                 placement="top"
                                 classes={{ tooltip: classes.tooltip }}
                                 >
@@ -238,6 +236,7 @@ export default function ProductDetails(props) {
                                     color="secondary"
                                     aria-label="Close"
                                     className={classes.tableActionButton}
+                                    onClick={()=>handleReviewDelete(value.id)}
                                 >
                                     <Close
                                     className={
@@ -261,7 +260,10 @@ export default function ProductDetails(props) {
                 </GridContainer>
             </CardBody>
           </Card>
-        </GridItem>
+        </GridItem>:
+        <GridItem md={6} style={{marginLeft:"auto",marginRight:"auto",fontWeight:"bold"}}>
+     Please Wait <CircularProgress style={{width:"15px",height:"15px",marginLeft:"5px"}}/>
+      </GridItem>}
       </GridContainer>
     </div>
   );

@@ -13,7 +13,8 @@ class AdminProvider extends React.Component{
         isSuperAdmin:false
     }
 
-    componentDidMount(){
+    componentDidMount(){/* 
+        localStorage.clear() */
         this.isTokenExpired();
 
         axios.get("https://martek.herokuapp.com/api/admin",
