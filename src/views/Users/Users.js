@@ -30,9 +30,6 @@ import Button from "components/CustomButtons/Button.js";
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 
-const styles = {
- 
-};
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -116,6 +113,7 @@ export default function Users() {
   const classes = useStyles();
 
   const [users, setUsers] = React.useState([]);
+  const [copyUsers,setCopyUsers] = React.useState([])
   const [isActive ,setIsActive] = React.useState(false);
   const [modalStyle] = React.useState(getModalStyle);
   const [deleteId,setId]=React.useState(0)
@@ -129,6 +127,7 @@ export default function Users() {
     .then(res=>{
       console.log(res.data)
         setUsers(res.data);
+        setCopyUsers(res.data)
         setIsActive(false)
     })
     .catch(error=>{
@@ -140,10 +139,8 @@ export default function Users() {
   //search
   function search(searchValue){
     let newSearchValue = searchValue.toLowerCase();
-    let tempProducts = [...users]
-   /*  if(searchValue === ""){
-      setUsers(tempProducts)
-    } */
+    let tempProducts = [...copyUsers];
+
     const search = _.filter(tempProducts, (item)=>{
         return searchQuery(item, newSearchValue)
     });
@@ -230,7 +227,7 @@ const handleClose = () => {
             <StyledTableCell align="center">{item.campus.campus}</StyledTableCell>
             <StyledTableCell align="center">{item.campus.created_at}</StyledTableCell>
             <StyledTableCell align="center" className={classes.tableActions}>
-        <Tooltip
+        {/* <Tooltip
           id="tooltip-top"
           title="View User"
           placement="top"
@@ -247,7 +244,7 @@ const handleClose = () => {
               }
             />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         {!blocked?
         <Tooltip
           id="tooltip-top-block"

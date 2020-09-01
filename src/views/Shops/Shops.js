@@ -111,6 +111,7 @@ export default function Shops(props) {
   const classes = useStyles();
 
   const [shops, setShops] = React.useState([]);
+  const [shopCopy, setShopCopy] = React.useState([]);
   const [page, setPage] = React.useState(1);
   const [open, setOpen] = React.useState(false);
   const [isActive, setIsActive] = React.useState(false)
@@ -127,6 +128,7 @@ export default function Shops(props) {
     .then(res=>{
       console.log("test:", res.data);
       setShops(res.data);
+      setShopCopy(res.data)
       setIsActive(false)
     });
   },[])
@@ -149,11 +151,9 @@ export default function Shops(props) {
    //search
    function search(searchValue){
     let newSearchValue = searchValue.toLowerCase();
-    let tempProducts = [...shops];
-    if(searchValue === ""){
-      console.log("im empty");
-    }
-    const search = _.filter(tempProducts, (item)=>{
+    let tempCopy = [...shopCopy]
+
+    const search = _.filter(tempCopy, (item)=>{
         return searchQuery(item, newSearchValue)
     });
     
