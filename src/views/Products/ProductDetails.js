@@ -128,10 +128,15 @@ export default function ProductDetails(props) {
   },[])
   
   function handleReviewDelete(id){
+    let tempReviews = reviews;
     axios.delete("https://martek.herokuapp.com/api/admin/product-review/"+id+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
-        console.log(res.data)
+        console.log(res.data);
+        if(res.data.status === "deleted"){
+          let newRatings = tempReviews.filter(item=>item.id !== id)
+          setReviews(newRatings)
+        }
     })
 }
   function TabPanel(props) {
@@ -168,10 +173,6 @@ export default function ProductDetails(props) {
     };
   }
   
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   const classes = useStyles();
   const {product_name,description, in_stock, price}=detaisl;
@@ -221,7 +222,7 @@ export default function ProductDetails(props) {
                                     <StyledTableCell align="center">{value.user.name}</StyledTableCell>
                                     <StyledTableCell align="center">{value.review}</StyledTableCell>
                                     <StyledTableCell align="center">{value.rating}</StyledTableCell>
-                                    <StyledTableCell align="center">{value.time}</StyledTableCell>
+                                    <StyledTableCell align="center">{value.date}, {value.time}</StyledTableCell>
                                     <StyledTableCell align="center" className={classes.tableActions}>
                                 
                                 <Tooltip
