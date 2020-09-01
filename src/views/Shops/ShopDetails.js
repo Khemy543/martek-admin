@@ -248,23 +248,23 @@ export default function ShopDetails(props) {
                       style={{width:"70px",height:"70px", left: "45%",marginTop:"-80px"}}
                   />
                   </div>
-                 
-                  
               </GridItem>
-
-                <GridItem md={6} style={{fontSize:"11px",fontWeight:"bold"}} className="shop_data">
-                    <h4><span style={{fontWeight:"bold"}}>Email:</span> {email}</h4>
-                    <h4><span style={{fontWeight:"bold"}}>Phone:</span> {phone}</h4>
-                    <h4><span style={{fontWeight:"bold"}}>Shop Type:</span> {shop_type}</h4>
-                    <h4><span style={{fontWeight:"bold"}}>Campus:</span> {campus}</h4>
-                    <h4><span style={{fontWeight:"bold"}}>No of Followers:</span> {no_followers}</h4>
-                    <h4><span style={{fontWeight:"bold"}}>Average Ratings:</span> {average}</h4>
-                </GridItem>
-               
-               </GridContainer>
+              </GridContainer>
+                <GridContainer>
+                  <GridItem md={6} style={{textAlign:"center", fontSize:"12px"}} className="shop_data">
+                    <h4 style={{fontWeight:"bold"}}>{email}</h4>
+                    <h4 style={{fontWeight:"bold"}}>{phone}</h4>
+                    <h4 style={{fontWeight:"bold"}}> {shop_type}</h4>
+                  </GridItem>
+                  <GridItem md={6} style={{textAlign:"center",fontSize:"12px"}} className="shop_data">
+                    <h4 style={{fontWeight:"bold"}}>{campus}</h4>
+                    <h4 style={{fontWeight:"bold"}}><span>No of Followers:</span> {no_followers}</h4>
+                    <h4 style={{fontWeight:"bold"}}><span>Average Ratings:</span> {average}</h4>
+                  </GridItem>
+                </GridContainer>
+                
                <GridContainer style={{marginTop:"20px"}}>
-                    <GridItem md={4} style={{marginLeft:"auto", marginRight:"auto"}}>
-                    <Paper square >
+                    <GridItem md={5} style={{marginLeft:"auto", marginRight:"auto"}}>
                         <Tabs
                         value={value}
                         indicatorColor="primary"
@@ -275,7 +275,6 @@ export default function ShopDetails(props) {
                         <Tab label="Products" value='one' {...a11yProps('one')}/>
                         <Tab label="Reviews" value='two' {...a11yProps('two')}/>
                         </Tabs>
-                    </Paper>
                     </GridItem>
                     <GridItem md={12}>
                     <TabPanel value={value} index="one">

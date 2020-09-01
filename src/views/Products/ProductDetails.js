@@ -183,21 +183,19 @@ export default function ProductDetails(props) {
           <Card>
             <CardHeader color="primary">
               <h4 className={classes.cardTitleWhite}>{product_name}</h4>
+              <p className={classes.cardCategoryWhite}>{description}</p>
             </CardHeader>
             <CardBody>
               <GridContainer>
                   <GridItem md={6} style={{fontSize:"11px"}}>
-                    <h4><span style={{fontWeight:"bold"}}>Product Description :</span>{description}</h4>
-                    <h4><span style={{fontWeight:"bold"}}>In Stock :</span>{in_stock}</h4>
-                    <h4><span style={{fontWeight:"bold"}}>Price :</span>{price}</h4>
-                    <h4><span style={{fontWeight:"bold"}}>Rate :</span>{average}</h4>
+                    <h4 style={{fontWeight:"bold"}}>In Stock : {in_stock}</h4>
+                    <h4 style={{fontWeight:"bold"}}>Price : GH¢ {price}</h4>
+                    <h4 style={{fontWeight:"bold"}}>Average : {average}</h4>
                   </GridItem>
               </GridContainer>
                <GridContainer style={{marginTop:"20px"}}>
-                    <GridItem md={4} style={{marginLeft:"auto", marginRight:"auto"}}>
-                    <Paper square >
+                    <GridItem md={3} style={{marginLeft:"auto", marginRight:"auto"}}>
                         <Tab label="Reviews" value='one' {...a11yProps('one')}/>
-                    </Paper>
                     </GridItem>
                     <GridItem md={12}>
                     <TabPanel value={value} index="one">
