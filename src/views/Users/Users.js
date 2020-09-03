@@ -174,9 +174,41 @@ function handleDeleteUser(){
   })
 }
 
-const handleClose = () => {
-  setOpen(false);
-};
+function handleBlockUser(id){
+  let tempUsers = users;
+  axios.post("http://martek.herokuapp.com/api/admin/block/"+id+"/user",null,
+  {headers:{"Authorization":`Bearer ${user}`}})
+  .then(res=>{
+    console.log(res.data);
+    if(res.data.status === "blocked"){
+      let selected = tempUsers.find(item=>item.id === id);
+      selected.isActive = false;
+      setUsers(tempUsers)
+    }
+  })
+  .catch(error=>{
+    console.log(error.response.data)
+  })
+}
+
+function handleUnBlockUser(id){
+  let tempUsers = users;
+  axios.post("http://martek.herokuapp.com/api/admin/unblock/"+id+"/user",null,
+  {headers:{"Authorization":`Bearer ${user}`}})
+  .then(res=>{
+    console.log(res.data);
+    if(res.data.status === "blocked"){
+      let selected = tempUsers.find(item=>item.id === id);
+      selected.isActive = true;
+      setUsers(tempUsers)
+    }
+  })
+  .catch(error=>{
+    console.log(error.response.data)
+  })
+}
+
+
 
 
   return (
@@ -245,7 +277,7 @@ const handleClose = () => {
             />
           </IconButton>
         </Tooltip> */}
-        {!blocked?
+        {item.isActive?
         <Tooltip
           id="tooltip-top-block"
           title="Block User"
@@ -257,6 +289,7 @@ const handleClose = () => {
             color="secondary"
             aria-label="Block"
             className={classes.tableActionButton}
+            onClick={()=>handleBlockUser(item.id)}
           >
             <LockIcon
               color="secondary"
@@ -277,6 +310,7 @@ const handleClose = () => {
             color="success"
             aria-label="Unblock"
             className={classes.tableActionButton}
+            onClick={()=>handleUnBlockUser(item.id)}
           >
             <LockOpenIcon
               color="success"

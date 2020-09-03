@@ -171,6 +171,28 @@ function searchQuery(item,newSearchValue){
     return false;
 }
 
+function handleBlockShop(id){
+  axios.post("http://martek.herokuapp.com/api/admin/block/"+id+"/merchandiser",null,
+  {headers:{"Authorization":`Bearer ${user}`}})
+  .then(res=>{
+    console.log(res.data)
+  })
+  .catch(error=>{
+    console.log(error.response.data)
+  })
+}
+
+function handleUnBlockShop(id){
+  axios.post("http://martek.herokuapp.com/api/admin/unblock/"+id+"/merchandiser",null,
+  {headers:{"Authorization":`Bearer ${user}`}})
+  .then(res=>{
+    console.log(res.data)
+  })
+  .catch(error=>{
+    console.log(error.response.data)
+  })
+}
+
 
   return (
     <GridContainer>
@@ -242,6 +264,7 @@ function searchQuery(item,newSearchValue){
           title="Block Shop"
           placement="top"
           classes={{ tooltip: classes.tooltip }}
+          onClick={()=>handleBlockShop(shop.id)}
         >
         
           <IconButton
@@ -268,6 +291,7 @@ function searchQuery(item,newSearchValue){
             color="success"
             aria-label="Unblock"
             className={classes.tableActionButton}
+            onClick={()=>handleUnBlockShop(shop.id)}
           >
             <LockOpenIcon
               color="success"
