@@ -83,7 +83,7 @@ export default function ChangePassword(props) {
           <Card>
           <CardHeader plain color="primary">
             <h4 className={classes.cardTitleWhite}>
-              Change New Password
+              Change Password
             </h4>
           </CardHeader>
           <CardBody>

@@ -175,14 +175,15 @@ function handleDeleteUser(){
 }
 
 function handleBlockUser(id){
-  let tempUsers = users;
+  let tempUsers = [...users];
   axios.post("http://martek.herokuapp.com/api/admin/block/"+id+"/user",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);
     if(res.data.status === "blocked"){
       let selected = tempUsers.find(item=>item.id === id);
-      selected.isActive = false;
+     console.log(selected.isActive);
+     selected.isActive = false;
       setUsers(tempUsers)
     }
   })
@@ -192,12 +193,12 @@ function handleBlockUser(id){
 }
 
 function handleUnBlockUser(id){
-  let tempUsers = users;
+  let tempUsers = [...users];
   axios.post("http://martek.herokuapp.com/api/admin/unblock/"+id+"/user",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);
-    if(res.data.status === "blocked"){
+    if(res.data.status === "unblocked"){
       let selected = tempUsers.find(item=>item.id === id);
       selected.isActive = true;
       setUsers(tempUsers)

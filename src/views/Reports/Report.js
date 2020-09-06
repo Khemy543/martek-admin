@@ -16,6 +16,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
+import Tabs from '@material-ui/core/Tabs';
 import classnames from "classnames";
 import Input from "@material-ui/core/Input";
 import Search from "@material-ui/icons/Search";
@@ -28,6 +29,10 @@ import SnackbarContent from "components/Snackbar/SnackbarContent.js";
 import Snackbar from "components/Snackbar/Snackbar.js";
 import axios from "axios";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import PropTypes from 'prop-types';
 
 const styles = {
     cardCategoryWhite: {
@@ -58,26 +63,105 @@ const styles = {
       }
     }
   };
+
+  const StyledTableCell = withStyles((theme) => ({
+    head: {
+      color: theme.palette.common.black,
+    },
+    body: {
+      fontSize: 14,
+    },
+  }))(TableCell);
+  
+  const StyledTableRow = withStyles((theme) => ({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
+  }))(TableRow);
+
+  
+  function rand() {
+    return Math.round(Math.random() * 20) - 10;
+  }
   
  
 
 const useStyles = makeStyles(styles);
- 
+let user = localStorage.getItem('access_token');
+
 export default function Reports(props) {
     
   const classes = useStyles();
-  const [reports, setCategories] = React.useState([]);
+  const [shopReports, setShopReports] = React.useState([]);
+  const [productReports, setProductReports] = React.useState([])
   const [isActive, setIsActive] = React.useState(false);
+  const [value, setValue] = React.useState('one');
 
- /*  React.useEffect(()=>{
+  React.useEffect(()=>{
       setIsActive(true)
-    axios.get("https://martek.herokuapp.com/api/categories")
+    axios.get("https://martek.herokuapp.com/api/admin/product-reports",
+    {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);
-        setCategories(res.data);
+        setProductReports(res.data);
         setIsActive(false)
     })
-},[]) */
+    .catch(error=>{
+      console.log(error.response.data)
+    })
+
+    axios.get("https://martek.herokuapp.com/api/admin/shop-reports",
+    {headers:{"Authorization":`Bearer ${user}`}})
+    .then(res=>{
+        console.log(res.data);
+        setShopReports(res.data);
+        setIsActive(false)
+    }).catch(error=>{
+      console.log(error.response.data)
+    })
+
+},[]) 
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`wrapped-tabpanel-${index}`}
+      aria-labelledby={`wrapped-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+
+function a11yProps(index) {
+  return {
+    id: `wrapped-tab-${index}`,
+    'aria-controls': `wrapped-tabpanel-${index}`,
+  };
+}
+
+
+const handleChange = (event, newValue) => {
+  setValue(newValue);
+};
 
   return (
     <GridContainer>
@@ -88,15 +172,148 @@ export default function Reports(props) {
         <h4 className={classes.cardTitleWhite}>All Reports</h4>
       </CardHeader>
       <CardBody>
-        <GridContainer>
-        {reports.map((value)=>(
-          <GridItem md="6">
-          <div  key={value.id} style={{cursor:"pointer"}} >
-          <SnackbarContent  message={value.message} />
-          </div>
-          </GridItem>
-        ))}
-        </GridContainer>
+      <GridContainer style={{marginTop:"20px"}}>
+                    <GridItem md={5} style={{marginLeft:"auto", marginRight:"auto"}}>
+                        <Tabs
+                        value={value}
+                        indicatorColor="primary"
+                        textColor="primary"
+                        onChange={handleChange}
+                        aria-label="disabled tabs example"
+                        >
+                        <Tab label="Shop Reports" value='one' {...a11yProps('one')}/>
+                        <Tab label="Product Reports" value='two' {...a11yProps('two')}/>
+                        </Tabs>
+                    </GridItem>
+                    <GridItem md={12}>
+                    <TabPanel value={value} index="one">
+                    <GridContainer>
+              
+                        <GridItem md={12}>
+                        <TableContainer component={Paper}>
+                        <Table className={classes.table} aria-label="customized table">
+                            <TableHead>
+                            <TableRow>
+                                <StyledTableCell align="center">Shop Id</StyledTableCell>
+                                <StyledTableCell align="center">Shop Name</StyledTableCell>
+                                <StyledTableCell align="center">Message</StyledTableCell>
+                                <StyledTableCell align="center">Reporter</StyledTableCell>
+                                <StyledTableCell align="center">Reporter Contact</StyledTableCell>
+                            
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {shopReports.map(item=>(
+                            <StyledTableRow key={item.id}>
+                                    <StyledTableCell align="center">{item.shop.id}</StyledTableCell>
+                                    <StyledTableCell align="center">{item.shop.shop_name}</StyledTableCell>
+                                    <StyledTableCell align="center">{item.report}</StyledTableCell>
+                                    <StyledTableCell align="center">{item.user.name}</StyledTableCell>
+                                    <StyledTableCell align="center">{item.user.email}</StyledTableCell>
+                                    {/* <StyledTableCell align="center" className={classes.tableActions}>
+                                <Tooltip
+                                id="tooltip-top"
+                                title="View Shop"
+                                placement="top"
+                                classes={{ tooltip: classes.tooltip }}
+                                >
+                                <IconButton
+                                    aria-label="Edit"
+                                    className={classes.tableActionButton}
+                                    onClick = {()=>{props.history.push("/admin/product-details",{id:item.id})}}
+                                >
+                                    <Visibility
+                                    color="primary"
+                                    className={
+                                        classes.tableActionButtonIcon + " " + classes.edit
+                                    }
+                                    />
+                                </IconButton>
+                                </Tooltip>
+                                <Tooltip
+                                id="tooltip-top-start"
+                                title="Delete Shop"
+                                placement="top"
+                                classes={{ tooltip: classes.tooltip }}
+                                >
+                                <IconButton
+                                    color="secondary"
+                                    aria-label="Close"
+                                    className={classes.tableActionButton}
+                                >
+                                    <Close
+                                    className={
+                                        classes.tableActionButtonIcon + " " + classes.close
+                                    }
+                                    />
+                                </IconButton>
+                                
+                                </Tooltip>
+                            </StyledTableCell> */}
+                                </StyledTableRow>
+                        ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                        </GridItem>
+                    </GridContainer>
+                    
+                    </TabPanel>
+                    <TabPanel value={value} index="two">
+                    <GridContainer>
+                    <GridItem md={12}>
+                        <TableContainer component={Paper}>
+                        <Table className={classes.table} aria-label="customized table">
+                            <TableHead>
+                            <TableRow>
+                                <StyledTableCell align="center">Product Id</StyledTableCell>
+                                <StyledTableCell align="center">Name</StyledTableCell>
+                                <StyledTableCell align="center">Message</StyledTableCell>
+                                <StyledTableCell align="center">Reporter</StyledTableCell>
+                                <StyledTableCell align="center">Reporter Contact</StyledTableCell>
+                            
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {productReports.map(value=>(
+                            <StyledTableRow key={value.id}>
+                                    <StyledTableCell align="center">{value.product.id}</StyledTableCell>
+                                    <StyledTableCell align="center">{value.product.product_name}</StyledTableCell>
+                                    <StyledTableCell align="center">{value.report}</StyledTableCell>
+                                    <StyledTableCell align="center">{value.user.name}</StyledTableCell>
+                                    <StyledTableCell align="center">{value.user.email}</StyledTableCell>
+                                   {/*  <StyledTableCell align="center" className={classes.tableActions}>
+                                
+                                <Tooltip
+                                id="tooltip-top-start"
+                                title="Delete Review"
+                                placement="top"
+                                classes={{ tooltip: classes.tooltip }}
+                                >
+                                <IconButton
+                                    color="secondary"
+                                    aria-label="Close"
+                                    className={classes.tableActionButton}
+                                >
+                                    <Close
+                                    className={
+                                        classes.tableActionButtonIcon + " " + classes.close
+                                    }
+                                    />
+                                </IconButton>
+                                
+                                </Tooltip>
+                            </StyledTableCell> */}
+                                </StyledTableRow>
+                        ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                        </GridItem>
+                </GridContainer>
+                    </TabPanel>
+                    </GridItem>
+                </GridContainer>
       </CardBody>
     </Card>
       </GridItem>

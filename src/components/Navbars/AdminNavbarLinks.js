@@ -86,7 +86,7 @@ export default function AdminNavbarLinks(props) {
           <Search />
         </Button>
       </div> */}
-      <div className={classes.manager}>
+      {/* <div className={classes.manager}>
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
           justIcon={window.innerWidth > 959}
@@ -163,7 +163,7 @@ export default function AdminNavbarLinks(props) {
             </Grow>
           )}
         </Poppers>
-      </div>
+      </div> */}
       <div className={classes.manager}>
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}

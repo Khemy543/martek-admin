@@ -135,7 +135,7 @@ export default function Shops(props) {
 
 
   function handleDeleteShop(){
-    let tempShop = shops;
+    let tempShop = [...shops];
     setOpen(false)
     axios.delete("https://martek.herokuapp.com/api/admin/shop/"+deletId+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
@@ -172,10 +172,16 @@ function searchQuery(item,newSearchValue){
 }
 
 function handleBlockShop(id){
+  let tempShops = [...shops];
   axios.post("http://martek.herokuapp.com/api/admin/block/"+id+"/merchandiser",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
-    console.log(res.data)
+    console.log(res.data);
+    if(res.data.status === "blocked"){
+      let selected = tempShops.find(item=>item.id === id);
+      selected.isActive = false;
+      setShops(tempShops)
+    }
   })
   .catch(error=>{
     console.log(error.response.data)
@@ -183,10 +189,16 @@ function handleBlockShop(id){
 }
 
 function handleUnBlockShop(id){
+  let tempShops = [...shops]
   axios.post("http://martek.herokuapp.com/api/admin/unblock/"+id+"/merchandiser",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
-    console.log(res.data)
+    console.log(res.data);
+    if(res.data.status === "unblocked"){
+      let selected = tempShops.find(item=>item.id === id);
+      selected.isActive = true;
+      setShops(tempShops)
+    }
   })
   .catch(error=>{
     console.log(error.response.data)
@@ -258,7 +270,7 @@ function handleUnBlockShop(id){
             />
           </IconButton>
         </Tooltip>
-        {!blocked?
+        {shop.isActive?
         <Tooltip
           id="tooltip-top-block"
           title="Block Shop"

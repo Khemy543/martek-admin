@@ -101,7 +101,7 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
-    path: "/maps",
+    path: "/reports",
     name: "Reports",
     icon: LibraryBooks,
     component: Reports,
@@ -133,7 +133,6 @@ const dashboardRoutes = [
     path: "/change-password",
     name: "Change Password",
     icon:Person,
-    invisible:true,
     component: ChangePassword,
     layout: "/admin"
   },
