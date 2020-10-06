@@ -1,33 +1,19 @@
 import React from "react";
 // @material-ui/core components
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
-import classnames from "classnames";
-import Input from "@material-ui/core/Input";
-import Search from "@material-ui/icons/Search";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Button from "components/CustomButtons/Button.js";
-import Visibility from "@material-ui/icons/Visibility";
-import Close from "@material-ui/icons/Close";
-import Popover from '@material-ui/core/Popover';
-import SnackbarContent from "components/Snackbar/SnackbarContent.js";
-import Snackbar from "components/Snackbar/Snackbar.js";
 import axios from "axios";
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Carousel from 'react-material-ui-carousel';
+import Button from "components/CustomButtons/Button.js";
 
 const styles = {
     cardCategoryWhite: {
@@ -62,22 +48,61 @@ const styles = {
  
 
 const useStyles = makeStyles(styles);
- 
+let user = localStorage.getItem("access_token")
+
+
 export default function Ads(props) {
     
   const classes = useStyles();
-  const [ads, setAds] = React.useState([]);
   const [isActive, setIsActive] = React.useState(false);
+  const [campuses, setCampuses] = React.useState([])
+  const [images, setImages] = React.useState([])
+  const [id, setId] = React.useState(1)
 
- /*  React.useEffect(()=>{
+  React.useEffect(()=>{
       setIsActive(true)
-    axios.get("https://martek.herokuapp.com/api/categories")
+    axios.get("https://martek.herokuapp.com/api/admin/campus/1/carousel-images",
+    {headers:{
+      "Authorization":`Bearer ${user}`
+  }})
     .then(res=>{
         console.log(res.data);
-        setCategories(res.data);
+        setImages(res.data)
         setIsActive(false)
     })
-},[]) */
+    .catch(error=>{
+      console.log(error.response.data)
+    })
+
+    //campus
+    axios.get("https://martek.herokuapp.com/api/campuses")
+    .then(res=>{
+        console.log(res.data);
+        setCampuses(res.data)
+    })
+    .catch(error=>{
+        console.log(error.response.data)
+    })
+
+},[])
+
+var items = [images]
+
+//fetch
+const FetchImages=(id)=>{
+setId(id)
+axios.get(`https://martek.herokuapp.com/api/admin/campus/${id}/carousel-images`,
+    {headers:{
+      "Authorization":`Bearer ${user}`
+  }})
+    .then(res=>{
+        console.log(res.data);
+        setImages(res.data)
+    })
+    .catch(error=>{
+      console.log(error.response.data)
+    })
+  }
 
   return (
     <GridContainer>
@@ -85,18 +110,42 @@ export default function Ads(props) {
       <GridItem xs={12} sm={12} md={12}>
       <Card>
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>Manage Ads</h4>
+      <GridContainer>
+      <GridItem md={6}>
+      <h4 className={classes.cardTitleWhite}>Manage Ads</h4>
+      </GridItem>
+      <GridItem md={6}>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={id}
+            onChange={e => FetchImages(e.target.value)}
+            >
+                {campuses.map(value => <MenuItem value={value.id} key={value.id}>{value.campus}</MenuItem>)}
+            </Select>
+      </GridItem>
+     
+      </GridContainer>
       </CardHeader>
       <CardBody>
         <GridContainer>
-        {ads.map((value)=>(
-          <GridItem md="6">
-          <div  key={value.id} style={{cursor:"pointer"}} >
-          <SnackbarContent  message={value.message} />
-          </div>
-          </GridItem>
+        {images.map(value=>(
+        <GridItem md={4}>
+          <div className='video-preview'>
+        <div className='image-container'>
+          <img src={require("assets/img/sidebar-2.jpg")} className="image"/>
+        </div>
+      </div>
+         </GridItem>
         ))}
         </GridContainer>
+        <br/>
+        <Button
+        color="primary"
+        onClick={()=>props.history.push("/admin/add-ads")}
+        >
+          Add Image
+        </Button>
       </CardBody>
     </Card>
       </GridItem>

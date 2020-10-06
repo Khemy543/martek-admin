@@ -38,6 +38,7 @@ import Categories from "views/Products/Categories";
 import Products from "views/Products/Products.js"
 import ShopDetails from "views/Shops/ShopDetails"
 import ProductDetails from "views/Products/ProductDetails"
+import AddAds from "views/Ads/AddAd";
 
 const dashboardRoutes = [
   {
@@ -112,6 +113,14 @@ const dashboardRoutes = [
     name: "Ads Control",
     icon: Notifications,
     component: Ads,
+    layout: "/admin"
+  },
+  {
+    path: "/add-ads",
+    name: "Ads Control",
+    icon: Notifications,
+    invisible:true,
+    component: AddAds,
     layout: "/admin"
   },
   {

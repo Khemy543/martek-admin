@@ -29,6 +29,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import axios from "axios";
 
 import { bugs, website, server } from "variables/general.js";
 
@@ -41,8 +42,41 @@ import {
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
 const useStyles = makeStyles(styles);
-
+let user = localStorage.getItem('access_token');
 export default function Dashboard() {
+  const [shop, setShop] = React.useState(0);
+  const [users, setUsers] = React.useState(0);
+  const [admins, setAdmins] = React.useState(0)
+
+  React.useEffect(()=>{
+    axios.get("http://martek.herokuapp.com/api/admin/fetch-shops",
+    {headers:{"Authorization":`Bearer ${user}`}})
+    .then(res=>{
+      console.log("test:", res.data);
+      setShop(res.data.length);
+    });
+
+    axios.get("http://martek.herokuapp.com/api/admin/fetch-users",
+    {headers:{"Authorization":`Bearer ${user}`}})
+    .then(res=>{
+      console.log(res.data)
+        setUsers(res.data.length);
+    })
+    .catch(error=>{
+      console.log(error)
+    });
+
+    axios.get("https://martek.herokuapp.com/api/admin/fetch-admins",
+    {headers:{"Authorization":`Bearer ${user}`}})
+    .then(res=>{
+      console.log(res.data);
+      setAdmins(res.data.length);
+    })
+    .catch(error=>{
+      console.log(error.response.data)
+    })
+
+  },[])
   const classes = useStyles();
   return (
     <div>
@@ -54,7 +88,7 @@ export default function Dashboard() {
                 <Person />
               </CardIcon>
               <p className={classes.cardCategory}>Users</p>
-              <h3 className={classes.cardTitle}>75</h3>
+              <h3 className={classes.cardTitle}>{users}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -71,7 +105,7 @@ export default function Dashboard() {
                 <Icon>info_outline</Icon>
               </CardIcon>
               <p className={classes.cardCategory}>Merchandisers</p>
-              <h3 className={classes.cardTitle}>75</h3>
+              <h3 className={classes.cardTitle}>{shop}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -88,7 +122,7 @@ export default function Dashboard() {
                 <Accessibility />
               </CardIcon>
               <p className={classes.cardCategory}>Admins</p>
-              <h3 className={classes.cardTitle}>45</h3>
+              <h3 className={classes.cardTitle}>{admins}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>

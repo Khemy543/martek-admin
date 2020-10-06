@@ -57,6 +57,7 @@ export default function AddAdmin() {
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
+      alert("New Admin Added");
     })
     .catch(error=>{
       console.log(error)
