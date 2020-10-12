@@ -65,7 +65,14 @@ export default function UserProfile() {
   },[])
 
   const handleUpdate=()=>{
-    console.log("yub")
+    axios.patch("https://martek.herokuapp.com/api/admin",
+    {headers:{"Authorization":`Bearer ${user}`}})
+    .then(res=>{
+      console.log(res.data)
+    })
+    .catch(error=>{
+      console.log(error.response.data)
+    })
   }
   const classes = useStyles();
   return (
@@ -87,6 +94,7 @@ export default function UserProfile() {
                     id="email-address"
                     value={name}
                     style={{width:"100%",marginBottom:"40px",marginTop:"20px"}}
+                    onChange={e=>setName(e.target.value)}
                   />
                 </GridItem>
               </GridContainer>
@@ -97,6 +105,7 @@ export default function UserProfile() {
                     placeholder="Email"
                     value={email}
                     style={{width:"100%",marginBottom:"40px"}}
+                    onChange={e=>setEmail(e.target.value)}
                   />
                 </GridItem>
               </GridContainer>
@@ -107,6 +116,7 @@ export default function UserProfile() {
                     placeholder="Phone"
                     value={phone}
                    style={{width:"100%",marginBottom:"40px"}}
+                   onChange={e=>setPhone(e.target.value)}
                   />
                 </GridItem>
               </GridContainer>
