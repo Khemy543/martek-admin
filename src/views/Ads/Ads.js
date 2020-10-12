@@ -14,6 +14,9 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Carousel from 'react-material-ui-carousel';
 import Button from "components/CustomButtons/Button.js";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+import Close from "@material-ui/icons/Close";
 
 const styles = {
     cardCategoryWhite: {
@@ -104,6 +107,22 @@ axios.get(`https://martek.herokuapp.com/api/admin/campus/${id}/carousel-images`,
     })
   }
 
+  const handelDelete=(id)=>{
+    let tempImages = images;
+    axios.delete(`https://martek.herokuapp.com/api/admin/campus-carousel/${id}/delete`,
+    {headers:{
+      "Authorization":`Bearer ${user}`
+  }})
+    .then(res=>{
+      console.log(res.data);
+      let newImages = tempImages.filter(item=>item.id !== id);
+      setImages(newImages)
+    })
+    .catch(error=>{
+      console.log(error)
+    })
+  }
+
   return (
     <GridContainer>
     {!isActive?
@@ -131,11 +150,42 @@ axios.get(`https://martek.herokuapp.com/api/admin/campus/${id}/carousel-images`,
         <GridContainer>
         {images.map(value=>(
         <GridItem md={4}>
+          <Card className={classes.root}>
+            <CardHeader>
+            <GridContainer>
+              <GridItem>
+
+              </GridItem>
+              <GridItem md={3}>
+            <Tooltip
+              id="tooltip-top-start"
+              title="Delete Image"
+              placement="top"
+              classes={{ tooltip: classes.tooltip }}
+            >
+              <IconButton
+                color="secondary"
+                aria-label="Close"
+                className={classes.tableActionButton}
+              >
+                <Close
+                  className={
+                    classes.tableActionButtonIcon + " " + classes.close
+                  }
+                  onClick={()=>handelDelete(value.id)}
+                />
+              </IconButton>
+              
+            </Tooltip>
+              </GridItem>
+            </GridContainer>
+            </CardHeader>
           <div className='video-preview'>
-        <div className='image-container'>
-          <img src={require("assets/img/sidebar-2.jpg")} className="image"/>
+          <div className='image-container' style={{textAlign:"center"}}>
+            <img src={require("assets/img/sidebar-2.jpg")} style={{height:"230px", width:"auto"}}/>
+          </div>
         </div>
-      </div>
+         </Card>
          </GridItem>
         ))}
         </GridContainer>

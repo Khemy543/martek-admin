@@ -46,13 +46,14 @@ let user = localStorage.getItem('access_token');
 
 export default function ChangePassword(props) {
   const [isActive, setIsActive] = React.useState(false);
-  const [password, setPassword] = React.useState("");
+  const [new_password, setPassword] = React.useState("");
   const [confirm, setConfirm] = React.useState("");
+  const [old_password, setOldPassword] = React.useState("");
 
   const hanldeSubmit=()=>{
-    if(password === confirm){
+    if(new_password === confirm){
     axios.post("https://martek.herokuapp.com/api/admin/change-password",
-    {password},
+    {new_password, old_password},
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
@@ -62,7 +63,7 @@ export default function ChangePassword(props) {
       }
     })
     .catch(error=>{
-      console.log(error)
+      console.log(error.response.data)
     })
     }
     else{
@@ -92,9 +93,22 @@ export default function ChangePassword(props) {
                   <GridContainer>
                       <GridItem md={6}>
                       <Input
-                          placeholder="Password"
+                          placeholder="Old Password"
                           style={{width:"80%", marginTop:"20px"}}
-                          value={password}
+                          value={old_password}
+                          onChange={e=>setOldPassword(e.target.value)}
+                          type="password"
+                      />
+                      </GridItem>
+                      
+
+                  </GridContainer>
+                  <GridContainer>
+                      <GridItem md={6}>
+                      <Input
+                          placeholder="New Password"
+                          style={{width:"80%", marginTop:"20px"}}
+                          value={new_password}
                           onChange={e=>setPassword(e.target.value)}
                           type="password"
                       />
