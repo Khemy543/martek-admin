@@ -100,7 +100,10 @@ export default function ProductDetails(props) {
     const [value, setValue] = React.useState('one');
     const [average, setAverage] = React.useState(0)
     const [expanded, setExpanded] = React.useState(false);
-    const [isActive, setIsActive] = React.useState(false)
+    const [isActive, setIsActive] = React.useState(false);
+    const [images, setImages] = React.useState([]);
+    const [owner, setOwner] = React.useState([])
+    const [campus, setCampus]= React.useState([])
 
    
 
@@ -110,7 +113,10 @@ export default function ProductDetails(props) {
     .then(res=>{
         console.log(res.data);
         setDetails(res.data);
-        setIsActive(false)
+        setIsActive(false);
+        setImages(res.data.product_images);
+        setOwner(res.data.product_owner);
+        setCampus(res.data.product_owner.campus)
     });
 
     axios.get("https://martek.herokuapp.com/api/product/"+props.location.state.id+"/reviews")
@@ -173,6 +179,9 @@ export default function ProductDetails(props) {
     };
   }
   
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const classes = useStyles();
   const {product_name,description, in_stock, price}=detaisl;
@@ -193,13 +202,41 @@ export default function ProductDetails(props) {
                     <h4 style={{fontWeight:"bold"}}>Price : GH¢ {price}</h4>
                     <h4 style={{fontWeight:"bold"}}>Average : {average}</h4>
                   </GridItem>
+                  <GridItem md={6} style={{fontSize:"11px",textAlign:"right"}}>
+                    <h4 style={{fontWeight:"bold"}}>{owner.name}</h4>
+                    <h4 style={{fontWeight:"bold"}}>{owner.email}</h4>
+                    <h4 style={{fontWeight:"bold"}}>{owner.phone}</h4>
+                    <h4 style={{fontWeight:"bold"}}>{campus.campus}</h4>
+                  </GridItem>
               </GridContainer>
                <GridContainer style={{marginTop:"20px"}}>
-                    <GridItem md={3} style={{marginLeft:"auto", marginRight:"auto"}}>
-                        <Tab label="Reviews" value='one' {...a11yProps('one')}/>
+               <GridItem md={5} style={{marginLeft:"auto", marginRight:"auto"}}>
+                        <Tabs
+                        value={value}
+                        indicatorColor="primary"
+                        textColor="primary"
+                        onChange={handleChange}
+                        aria-label="disabled tabs example"
+                        >
+                        <Tab label="Products Images" value='one' {...a11yProps('one')}/>
+                        <Tab label="Reviews" value='two' {...a11yProps('two')}/>
+                        </Tabs>
                     </GridItem>
                     <GridItem md={12}>
                     <TabPanel value={value} index="one">
+                    <GridContainer>
+                        <GridItem md={12}>
+                          <GridContainer>
+                          {images.map(value=>(
+                            <GridItem md={4}>
+                                <img src={require("assets/img/sidebar-1.jpg")} style={{height:"auto", width:"140px" }}/>
+                            </GridItem>
+                            ))}
+                          </GridContainer>
+                        </GridItem>
+                    </GridContainer>
+                    </TabPanel>
+                    <TabPanel value={value} index="two">
                     <GridContainer>
                     <GridItem md={12}>
                         <TableContainer component={Paper}>
