@@ -64,14 +64,23 @@ export default function UserProfile() {
     
   },[])
 
-  const handleUpdate=()=>{
-    axios.patch("https://martek.herokuapp.com/api/admin",
+  const handleUpdate=(e)=>{
+    e.preventDefault();
+    console.log("....")
+    axios.patch("https://martek.herokuapp.com/api/admin/update",
+    {
+      name:name,
+      email:email,
+      phone:phone,
+      role:role
+    },
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
-      console.log(res.data)
+      console.log(res.data);
+      alert("Updated!")
     })
     .catch(error=>{
-      console.log(error.response.data)
+      console.log(error)
     })
   }
   const classes = useStyles();
@@ -81,6 +90,7 @@ export default function UserProfile() {
       {!isActive?
         <GridItem xs={12} sm={12} md={8}>
           <Card>
+            <form onSubmit={handleUpdate}>
             <CardHeader color="primary">
               <h4 className={classes.cardTitleWhite}>Edit Profile</h4>
               <p className={classes.cardCategoryWhite}>Update your profile</p>
@@ -133,8 +143,9 @@ export default function UserProfile() {
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button color="primary" onClick={()=>handleUpdate()}>Update Profile</Button>
+              <Button color="primary" type="submit">Update Profile</Button>
             </CardFooter>
+              </form>
           </Card>
         </GridItem>
         :
