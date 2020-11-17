@@ -10,9 +10,9 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Input from "@material-ui/core/Input";
-import Button from "components/CustomButtons/Button.js";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
+import { Button } from "@material-ui/core";
 
 const styles = {
   cardCategoryWhite: {
@@ -43,8 +43,9 @@ export default function LoginPage() {
   const [isActive, setIsActive] = React.useState(false);
   const [error,setError] =React.useState(false);
 
-  const handleSubmit=()=>{
+  const handleSubmit=(e)=>{
       console.log("handling");
+      e.preventDefault()
       if(email !== "" && password !== ""){
         setIsActive(true)
       axios.post("https://martek.herokuapp.com/api/admin/auth/login",
@@ -72,7 +73,7 @@ export default function LoginPage() {
         <GridContainer>
             <GridItem md={4} sm={12} xs={12} style={{marginRight:"auto" ,marginLeft:"auto",marginTop:"25vh"}}>
             
-            <form>
+            <form onSubmit={handleSubmit}>
             {error?
             <Alert severity="error">Inncorrect Credentials</Alert>:
             <div></div>}
@@ -103,8 +104,10 @@ export default function LoginPage() {
             </div>
             </CardBody>
             <CardFooter>
-              <Button color="primary"  onClick={()=>handleSubmit()} >{!isActive?<>SIGN</>:<CircularProgress color="secondary" style={{width:"15px",height:"15px",marginLeft:"5px"}}/>}</Button>
-            </CardFooter>
+{/*               <Button color="primary"  onClick={()=>handleSubmit()} >{!isActive?<>SIGN</>:<CircularProgress color="secondary" style={{width:"15px",height:"15px",marginLeft:"5px"}}/>}</Button>
+ */}            
+    <Button color="primary" type='submit'  >{!isActive?<>SIGN IN</>:<CircularProgress color="secondary" style={{width:"15px",height:"15px",marginLeft:"5px"}}/>}</Button>
+ </CardFooter>
           </Card>
           <p style={{textAlign:"center", fontSize:"11px", color:"#0066ffc2"}}>@martek 2020</p>
           </form>

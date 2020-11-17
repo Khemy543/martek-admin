@@ -135,7 +135,7 @@ export default function ShopDetails(props) {
     const [average, setAverage] = React.useState(0);
     const [isActive, setIsActive] = React.useState(false);
     const [modalStyle] = React.useState(getModalStyle);
-    const [deletId, setDeleteId] = React.useState(0)
+    const [deletId, setDeleteId] = React.useState(0);
     const [open, setOpen] = React.useState(false);
 
 
@@ -167,23 +167,27 @@ export default function ShopDetails(props) {
     
   },[]);
 
-  function handleReviewDelete(){
+  function handleReviewDelete(id){
     setOpen(false)
     let tempProducts =products;
-      axios.delete("https://martek.herokuapp.com/api/admin/shop-review/"+deletId+"/delete",
+      axios.delete("https://martek.herokuapp.com/api/admin/shop-review/"+id+"/delete",
       {headers:{"Authorization":`Bearer ${user}`}})
       .then(res=>{
-          console.log(res.data);
-          let newProducts = tempProducts.filter(item=>item.id !== deletId);
-          setProducts(newProducts)
+         let tempReviews = [...reviews];
+         let newReviews = tempProducts.filter(item=>item.id != id);
+         setReviews(newReviews)
       })
   }
 
   function handleDeleteProduct(id){
-    axios.delete("https://martek.herokuapp.com/api/admin/product/"+id+"/delete",
+    axios.delete("https://martek.herokuapp.com/api/admin/product/"+deletId+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
-        console.log(res.data)
+        console.log(res.data);
+        let tempProducts = [...products]
+        let newProducts = tempProducts.filter(item=>item.id != deletId);
+        setProducts(newProducts);
+        setOpen(false);
     })
 }
 
@@ -303,7 +307,7 @@ export default function ShopDetails(props) {
                                     <StyledTableCell align="center" className={classes.tableActions}>
                                 <Tooltip
                                 id="tooltip-top"
-                                title="View Shop"
+                                title="View Product"
                                 placement="top"
                                 classes={{ tooltip: classes.tooltip }}
                                 >
@@ -322,7 +326,7 @@ export default function ShopDetails(props) {
                                 </Tooltip>
                                 <Tooltip
                                 id="tooltip-top-start"
-                                title="Delete Shop"
+                                title="Delete Product"
                                 placement="top"
                                 classes={{ tooltip: classes.tooltip }}
                                 >
