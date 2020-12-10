@@ -51,7 +51,7 @@ export default function UserProfile() {
 
   React.useEffect(()=>{
     setIsActive(true)
-    axios.get("https://martek.herokuapp.com/api/admin",
+    axios.get("http://backend-api.martekgh.com/api/admin",
   {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
@@ -67,7 +67,7 @@ export default function UserProfile() {
   const handleUpdate=(e)=>{
     e.preventDefault();
     console.log("....")
-    axios.patch("https://martek.herokuapp.com/api/admin/update",
+    axios.patch("http://backend-api.martekgh.com/api/admin/update",
     {
       name:name,
       email:email,

@@ -117,7 +117,7 @@ export default function Products(props) {
 
 
   React.useEffect(()=>{
-    axios.get("https://martek.herokuapp.com/api/category/"+props.location.state.id+"/products")
+    axios.get("http://backend-api.martekgh.com/api/category/"+props.location.state.id+"/products")
     .then(res=>{
         console.log(res.data);
     });
@@ -129,7 +129,7 @@ export default function Products(props) {
   function getProducts(page=1){
     setIsActive(true)
     console.log("page:",page)
-    axios.get("https://martek.herokuapp.com/api/category/"+props.location.state.id+"/products?page="+page+"")
+    axios.get("http://backend-api.martekgh.com/api/category/"+props.location.state.id+"/products?page="+page+"")
     .then(res=>{
       console.log(res.data)
         setProducts(res.data);
@@ -142,7 +142,7 @@ export default function Products(props) {
 
 function handleDeleteProduct(){
   setOpen(false)
-    axios.delete("https://martek.herokuapp.com/api/admin/product/"+deletId+"/delete",
+    axios.delete("http://backend-api.martekgh.com/api/admin/product/"+deletId+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data)

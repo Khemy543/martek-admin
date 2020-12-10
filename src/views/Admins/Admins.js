@@ -90,7 +90,7 @@ export default function Admins() {
 
   React.useEffect(()=>{
     setIsActive(true);
-    axios.get("https://martek.herokuapp.com/api/admin/fetch-admins",
+    axios.get("http://backend-api.martekgh.com/api/admin/fetch-admins",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
@@ -105,7 +105,7 @@ export default function Admins() {
 
   const handleBlockAdmin=(id)=>{
     let tempAdmins = [...admins];
-    axios.post("https://martek.herokuapp.com/api/admin/"+id+"/block",null,
+    axios.post("http://backend-api.martekgh.com/api/admin/"+id+"/block",null,
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
@@ -119,7 +119,7 @@ export default function Admins() {
 
   const handleUnBlockAdmin=(id)=>{
     let tempAdmins = [...admins];
-    axios.post("https://martek.herokuapp.com/api/admin/"+id+"/unblock",null,
+    axios.post("http://backend-api.martekgh.com/api/admin/"+id+"/unblock",null,
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);

@@ -122,7 +122,7 @@ export default function Users() {
 
   React.useEffect(()=>{
     setIsActive(true)
-    axios.get("http://martek.herokuapp.com/api/admin/fetch-users",
+    axios.get("http://backend-api.martekgh.com/api/admin/fetch-users",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data)
@@ -163,7 +163,7 @@ function handleDeleteUser(){
   let tempUsers = users;
   console.log(deleteId)
   setOpen(false)
-  axios.delete("http://martek.herokuapp.com/api/admin/user/"+deleteId+"/delete-account",
+  axios.delete("http://backend-api.martekgh.com/api/admin/user/"+deleteId+"/delete-account",
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);
@@ -176,7 +176,7 @@ function handleDeleteUser(){
 
 function handleBlockUser(id){
   let tempUsers = [...users];
-  axios.post("http://martek.herokuapp.com/api/admin/block/"+id+"/user",null,
+  axios.post("http://backend-api.martekgh.com/api/admin/block/"+id+"/user",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);
@@ -194,7 +194,7 @@ function handleBlockUser(id){
 
 function handleUnBlockUser(id){
   let tempUsers = [...users];
-  axios.post("http://martek.herokuapp.com/api/admin/unblock/"+id+"/user",null,
+  axios.post("http://backend-api.martekgh.com/api/admin/unblock/"+id+"/user",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);

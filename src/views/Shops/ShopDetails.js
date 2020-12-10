@@ -141,7 +141,7 @@ export default function ShopDetails(props) {
 
   React.useEffect(()=>{
     setIsActive(true)
-    axios.get("https://martek.herokuapp.com/api/admin/get-shop/"+props.location.state.id+"/details",
+    axios.get("http://backend-api.martekgh.com/api/admin/get-shop/"+props.location.state.id+"/details",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);
@@ -149,7 +149,7 @@ export default function ShopDetails(props) {
         setIsActive(false)
     });
 
-    axios.get("https://martek.herokuapp.com/api/shop/"+props.location.state.id+"/reviews")
+    axios.get("http://backend-api.martekgh.com/api/shop/"+props.location.state.id+"/reviews")
     .then(res=>{
         console.log(res.data);
         setReviews(res.data.product_reviews);
@@ -159,7 +159,7 @@ export default function ShopDetails(props) {
         console.log(error.response.data)
     });
 
-    axios.get("https://martek.herokuapp.com/api/merchandiser/"+props.location.state.id+"/products")
+    axios.get("http://backend-api.martekgh.com/api/merchandiser/"+props.location.state.id+"/products")
     .then(res=>{
         console.log(res.data);
         setProducts(res.data[0])
@@ -170,7 +170,7 @@ export default function ShopDetails(props) {
   function handleReviewDelete(id){
     setOpen(false)
     let tempProducts =products;
-      axios.delete("https://martek.herokuapp.com/api/admin/shop-review/"+id+"/delete",
+      axios.delete("http://backend-api.martekgh.com/api/admin/shop-review/"+id+"/delete",
       {headers:{"Authorization":`Bearer ${user}`}})
       .then(res=>{
          let tempReviews = [...reviews];
@@ -180,7 +180,7 @@ export default function ShopDetails(props) {
   }
 
   function handleDeleteProduct(id){
-    axios.delete("https://martek.herokuapp.com/api/admin/product/"+deletId+"/delete",
+    axios.delete("http://backend-api.martekgh.com/api/admin/product/"+deletId+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);

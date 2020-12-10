@@ -48,7 +48,7 @@ export default function LoginPage() {
       e.preventDefault()
       if(email !== "" && password !== ""){
         setIsActive(true)
-      axios.post("https://martek.herokuapp.com/api/admin/auth/login",
+      axios.post("http://backend-api.martekgh.com/api/admin/auth/login",
       {
         email, password
       })

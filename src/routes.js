@@ -39,6 +39,7 @@ import Products from "views/Products/Products.js"
 import ShopDetails from "views/Shops/ShopDetails"
 import ProductDetails from "views/Products/ProductDetails"
 import AddAds from "views/Ads/AddAd";
+import Campus from "views/Campus/Campus";
 
 const dashboardRoutes = [
   {
@@ -102,6 +103,13 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
+    path: "/campuses",
+    name: "Campuses",
+    icon:Person,
+    component: Campus,
+    layout: "/admin"
+  },
+  {
     path: "/reports",
     name: "Reports",
     icon: LibraryBooks,
@@ -145,6 +153,7 @@ const dashboardRoutes = [
     component: ChangePassword,
     layout: "/admin"
   },
+ 
 ];
 
 export default dashboardRoutes;

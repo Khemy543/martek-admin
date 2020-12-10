@@ -77,7 +77,7 @@ export default function AddAds(props) {
 
 
   React.useEffect(()=>{
-    axios.get("https://martek.herokuapp.com/api/campuses")
+    axios.get("http://backend-api.martekgh.com/api/campuses")
     .then(res=>{
         console.log(res.data);
         setCampuses(res.data)
@@ -91,7 +91,7 @@ export default function AddAds(props) {
      e.preventDefault()
     let BodyForm = new FormData();
     BodyForm.append('image_path',file);
-    axios.post("https://martek.herokuapp.com/api/admin/campus/"+id+"/carousel-images",BodyForm,
+    axios.post("http://backend-api.martekgh.com/api/admin/campus/"+id+"/carousel-images",BodyForm,
     {headers:{
         "Authorization":`Bearer ${user}`,
         "Content-Type":"mutipart/form-data"

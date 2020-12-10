@@ -17,7 +17,7 @@ class AdminProvider extends React.Component{
         localStorage.clear() */
         this.isTokenExpired();
 
-        axios.get("https://martek.herokuapp.com/api/admin",
+        axios.get("http://backend-api.martekgh.com/api/admin",
         {headers:{"Authorization":`Bearer ${user}`}})
         .then(res=>{
           console.log(res.data);

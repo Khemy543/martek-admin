@@ -101,7 +101,7 @@ export default function Reports(props) {
 
   React.useEffect(()=>{
       setIsActive(true)
-    axios.get("https://martek.herokuapp.com/api/admin/product-reports",
+    axios.get("http://backend-api.martekgh.com/api/admin/product-reports",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);
@@ -112,7 +112,7 @@ export default function Reports(props) {
       console.log(error.response.data)
     })
 
-    axios.get("https://martek.herokuapp.com/api/admin/shop-reports",
+    axios.get("http://backend-api.martekgh.com/api/admin/shop-reports",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);

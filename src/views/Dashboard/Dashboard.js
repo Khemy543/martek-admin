@@ -49,14 +49,14 @@ export default function Dashboard() {
   const [admins, setAdmins] = React.useState(0)
 
   React.useEffect(()=>{
-    axios.get("http://martek.herokuapp.com/api/admin/fetch-shops",
+    axios.get("http://backend-api.martekgh.com/api/admin/fetch-shops",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log("test:", res.data);
       setShop(res.data.length);
     });
 
-    axios.get("http://martek.herokuapp.com/api/admin/fetch-users",
+    axios.get("http://backend-api.martekgh.com/api/admin/fetch-users",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data)
@@ -66,7 +66,7 @@ export default function Dashboard() {
       console.log(error)
     });
 
-    axios.get("https://martek.herokuapp.com/api/admin/fetch-admins",
+    axios.get("http://backend-api.martekgh.com/api/admin/fetch-admins",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);

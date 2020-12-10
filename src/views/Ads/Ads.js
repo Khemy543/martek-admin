@@ -64,7 +64,7 @@ export default function Ads(props) {
 
   React.useEffect(()=>{
       setIsActive(true)
-    axios.get("https://martek.herokuapp.com/api/admin/campus/1/carousel-images",
+    axios.get("http://backend-api.martekgh.com/api/admin/campus/1/carousel-images",
     {headers:{
       "Authorization":`Bearer ${user}`
   }})
@@ -78,7 +78,7 @@ export default function Ads(props) {
     })
 
     //campus
-    axios.get("https://martek.herokuapp.com/api/campuses")
+    axios.get("http://backend-api.martekgh.com/api/campuses")
     .then(res=>{
         console.log(res.data);
         setCampuses(res.data)
@@ -94,7 +94,7 @@ var items = [images]
 //fetch
 const FetchImages=(id)=>{
 setId(id)
-axios.get(`https://martek.herokuapp.com/api/admin/campus/${id}/carousel-images`,
+axios.get(`http://backend-api.martekgh.com/api/admin/campus/${id}/carousel-images`,
     {headers:{
       "Authorization":`Bearer ${user}`
   }})
@@ -109,7 +109,7 @@ axios.get(`https://martek.herokuapp.com/api/admin/campus/${id}/carousel-images`,
 
   const handelDelete=(id)=>{
     let tempImages = images;
-    axios.delete(`https://martek.herokuapp.com/api/admin/campus-carousel/${id}/delete`,
+    axios.delete(`http://backend-api.martekgh.com/api/admin/campus-carousel/${id}/delete`,
     {headers:{
       "Authorization":`Bearer ${user}`
   }})

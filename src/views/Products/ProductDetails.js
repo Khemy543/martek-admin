@@ -109,7 +109,7 @@ export default function ProductDetails(props) {
 
   React.useEffect(()=>{
       setIsActive(true)
-    axios.get("https://martek.herokuapp.com/api/product/"+props.location.state.id+"/details")
+    axios.get("http://backend-api.martekgh.com/api/product/"+props.location.state.id+"/details")
     .then(res=>{
         console.log(res.data);
         setDetails(res.data);
@@ -119,7 +119,7 @@ export default function ProductDetails(props) {
         setCampus(res.data.product_owner.campus)
     });
 
-    axios.get("https://martek.herokuapp.com/api/product/"+props.location.state.id+"/reviews")
+    axios.get("http://backend-api.martekgh.com/api/product/"+props.location.state.id+"/reviews")
     .then(res=>{
         console.log(res.data);
         setReviews(res.data.product_reviews);
@@ -135,7 +135,7 @@ export default function ProductDetails(props) {
   
   function handleReviewDelete(id){
     let tempReviews = reviews;
-    axios.delete("https://martek.herokuapp.com/api/admin/product-review/"+id+"/delete",
+    axios.delete("http://backend-api.martekgh.com/api/admin/product-review/"+id+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);
