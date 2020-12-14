@@ -114,7 +114,7 @@ export default function Shops(props) {
   const [shopCopy, setShopCopy] = React.useState([]);
   const [page, setPage] = React.useState(1);
   const [open, setOpen] = React.useState(false);
-  const [isActive, setIsActive] = React.useState(false)
+  const [isActive, setIsActive] = React.useState(true)
   const [blocked,setBlock]=React.useState(false)
   const [modalStyle] = React.useState(getModalStyle);
   const [deletId, setDeleteId] = React.useState(0)
@@ -123,7 +123,7 @@ export default function Shops(props) {
 
   React.useEffect(()=>{
     setIsActive(true)
-    axios.get("http://backend-api.martekgh.com/api/admin/fetch-shops",
+    axios.get("https://backend-api.martekgh.com/api/admin/fetch-shops",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log("test:", res.data);
@@ -137,7 +137,7 @@ export default function Shops(props) {
   function handleDeleteShop(){
     let tempShop = [...shops];
     setOpen(false)
-    axios.delete("http://backend-api.martekgh.com/api/admin/shop/"+deletId+"/delete",
+    axios.delete("https://backend-api.martekgh.com/api/admin/shop/"+deletId+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
@@ -173,7 +173,7 @@ function searchQuery(item,newSearchValue){
 
 function handleBlockShop(id){
   let tempShops = [...shops];
-  axios.post("http://backend-api.martekgh.com/api/admin/block/"+id+"/merchandiser",null,
+  axios.post("https://backend-api.martekgh.com/api/admin/block/"+id+"/merchandiser",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);
@@ -190,7 +190,7 @@ function handleBlockShop(id){
 
 function handleUnBlockShop(id){
   let tempShops = [...shops]
-  axios.post("http://backend-api.martekgh.com/api/admin/unblock/"+id+"/merchandiser",null,
+  axios.post("https://backend-api.martekgh.com/api/admin/unblock/"+id+"/merchandiser",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);

@@ -52,7 +52,7 @@ export default function ChangePassword(props) {
 
   const hanldeSubmit=()=>{
     if(new_password === confirm){
-    axios.post("http://backend-api.martekgh.com/api/admin/change-password",
+    axios.post("https://backend-api.martekgh.com/api/admin/change-password",
     {new_password, old_password},
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{

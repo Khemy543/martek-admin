@@ -114,7 +114,7 @@ export default function Users() {
 
   const [users, setUsers] = React.useState([]);
   const [copyUsers,setCopyUsers] = React.useState([])
-  const [isActive ,setIsActive] = React.useState(false);
+  const [isActive ,setIsActive] = React.useState(true);
   const [modalStyle] = React.useState(getModalStyle);
   const [deleteId,setId]=React.useState(0)
   const [open, setOpen] = React.useState(false);
@@ -122,7 +122,7 @@ export default function Users() {
 
   React.useEffect(()=>{
     setIsActive(true)
-    axios.get("http://backend-api.martekgh.com/api/admin/fetch-users",
+    axios.get("https://backend-api.martekgh.com/api/admin/fetch-users",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data)
@@ -163,7 +163,7 @@ function handleDeleteUser(){
   let tempUsers = users;
   console.log(deleteId)
   setOpen(false)
-  axios.delete("http://backend-api.martekgh.com/api/admin/user/"+deleteId+"/delete-account",
+  axios.delete("https://backend-api.martekgh.com/api/admin/user/"+deleteId+"/delete-account",
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);
@@ -176,7 +176,7 @@ function handleDeleteUser(){
 
 function handleBlockUser(id){
   let tempUsers = [...users];
-  axios.post("http://backend-api.martekgh.com/api/admin/block/"+id+"/user",null,
+  axios.post("https://backend-api.martekgh.com/api/admin/block/"+id+"/user",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);
@@ -194,7 +194,7 @@ function handleBlockUser(id){
 
 function handleUnBlockUser(id){
   let tempUsers = [...users];
-  axios.post("http://backend-api.martekgh.com/api/admin/unblock/"+id+"/user",null,
+  axios.post("https://backend-api.martekgh.com/api/admin/unblock/"+id+"/user",null,
   {headers:{"Authorization":`Bearer ${user}`}})
   .then(res=>{
     console.log(res.data);

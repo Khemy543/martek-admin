@@ -57,14 +57,14 @@ let user = localStorage.getItem("access_token")
 export default function Ads(props) {
     
   const classes = useStyles();
-  const [isActive, setIsActive] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(true);
   const [campuses, setCampuses] = React.useState([])
   const [images, setImages] = React.useState([])
   const [id, setId] = React.useState(1)
 
   React.useEffect(()=>{
       setIsActive(true)
-    axios.get("http://backend-api.martekgh.com/api/admin/campus/1/carousel-images",
+    axios.get("https://backend-api.martekgh.com/api/admin/campus/1/carousel-images",
     {headers:{
       "Authorization":`Bearer ${user}`
   }})
@@ -78,7 +78,7 @@ export default function Ads(props) {
     })
 
     //campus
-    axios.get("http://backend-api.martekgh.com/api/campuses")
+    axios.get("https://backend-api.martekgh.com/api/campuses")
     .then(res=>{
         console.log(res.data);
         setCampuses(res.data)
@@ -94,7 +94,7 @@ var items = [images]
 //fetch
 const FetchImages=(id)=>{
 setId(id)
-axios.get(`http://backend-api.martekgh.com/api/admin/campus/${id}/carousel-images`,
+axios.get(`https://backend-api.martekgh.com/api/admin/campus/${id}/carousel-images`,
     {headers:{
       "Authorization":`Bearer ${user}`
   }})
@@ -109,7 +109,7 @@ axios.get(`http://backend-api.martekgh.com/api/admin/campus/${id}/carousel-image
 
   const handelDelete=(id)=>{
     let tempImages = images;
-    axios.delete(`http://backend-api.martekgh.com/api/admin/campus-carousel/${id}/delete`,
+    axios.delete(`https://backend-api.martekgh.com/api/admin/campus-carousel/${id}/delete`,
     {headers:{
       "Authorization":`Bearer ${user}`
   }})

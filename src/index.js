@@ -56,7 +56,7 @@ axios.interceptors.request.use(request=>{
     console.log("error",originalRequest);
     if ( error.response.status === 401 && error.config && !error.config.__isRetryRequest || decoded.exp < (Date.now()/1000)-10000){
       console.log("big error");
-    axios.post('http://backend-api.martekgh.com/api/admin/auth/refresh-token',null)
+    axios.post('https://backend-api.martekgh.com/api/admin/auth/refresh-token',null)
       .then(res=>{
         console.log(res.data);
         if(res.data.statusCode === 200){

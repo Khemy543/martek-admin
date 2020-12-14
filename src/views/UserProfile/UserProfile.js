@@ -47,11 +47,11 @@ export default function UserProfile() {
   const[email, setEmail] = React.useState("");
   const[phone, setPhone] = React.useState("");
   const [role, setRole] = React.useState("");
-  const [isActive, setIsActive] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(true);
 
   React.useEffect(()=>{
     setIsActive(true)
-    axios.get("http://backend-api.martekgh.com/api/admin",
+    axios.get("https://backend-api.martekgh.com/api/admin",
   {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
@@ -67,7 +67,7 @@ export default function UserProfile() {
   const handleUpdate=(e)=>{
     e.preventDefault();
     console.log("....")
-    axios.patch("http://backend-api.martekgh.com/api/admin/update",
+    axios.patch("https://backend-api.martekgh.com/api/admin/update",
     {
       name:name,
       email:email,

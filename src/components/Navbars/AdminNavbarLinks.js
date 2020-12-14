@@ -55,7 +55,7 @@ export default function AdminNavbarLinks(props) {
 
   const handleLogout=()=>{
     setOpenProfile(null)
-    axios.post("http://backend-api.martekgh.com/api/admin/auth/logout",null,
+    axios.post("https://backend-api.martekgh.com/api/admin/auth/logout",null,
     {headers:{ 'Authorization':`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);

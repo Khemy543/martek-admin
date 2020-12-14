@@ -96,12 +96,12 @@ export default function Reports(props) {
   const classes = useStyles();
   const [shopReports, setShopReports] = React.useState([]);
   const [productReports, setProductReports] = React.useState([])
-  const [isActive, setIsActive] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(true);
   const [value, setValue] = React.useState('one');
 
   React.useEffect(()=>{
       setIsActive(true)
-    axios.get("http://backend-api.martekgh.com/api/admin/product-reports",
+    axios.get("https://backend-api.martekgh.com/api/admin/product-reports",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);
@@ -112,7 +112,7 @@ export default function Reports(props) {
       console.log(error.response.data)
     })
 
-    axios.get("http://backend-api.martekgh.com/api/admin/shop-reports",
+    axios.get("https://backend-api.martekgh.com/api/admin/shop-reports",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);

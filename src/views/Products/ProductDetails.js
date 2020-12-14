@@ -100,7 +100,7 @@ export default function ProductDetails(props) {
     const [value, setValue] = React.useState('one');
     const [average, setAverage] = React.useState(0)
     const [expanded, setExpanded] = React.useState(false);
-    const [isActive, setIsActive] = React.useState(false);
+    const [isActive, setIsActive] = React.useState(true);
     const [images, setImages] = React.useState([]);
     const [owner, setOwner] = React.useState([])
     const [campus, setCampus]= React.useState([])
@@ -109,7 +109,7 @@ export default function ProductDetails(props) {
 
   React.useEffect(()=>{
       setIsActive(true)
-    axios.get("http://backend-api.martekgh.com/api/product/"+props.location.state.id+"/details")
+    axios.get("https://backend-api.martekgh.com/api/product/"+props.location.state.id+"/details")
     .then(res=>{
         console.log(res.data);
         setDetails(res.data);
@@ -119,7 +119,7 @@ export default function ProductDetails(props) {
         setCampus(res.data.product_owner.campus)
     });
 
-    axios.get("http://backend-api.martekgh.com/api/product/"+props.location.state.id+"/reviews")
+    axios.get("https://backend-api.martekgh.com/api/product/"+props.location.state.id+"/reviews")
     .then(res=>{
         console.log(res.data);
         setReviews(res.data.product_reviews);
@@ -135,7 +135,7 @@ export default function ProductDetails(props) {
   
   function handleReviewDelete(id){
     let tempReviews = reviews;
-    axios.delete("http://backend-api.martekgh.com/api/admin/product-review/"+id+"/delete",
+    axios.delete("https://backend-api.martekgh.com/api/admin/product-review/"+id+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);
@@ -229,7 +229,7 @@ export default function ProductDetails(props) {
                           <GridContainer>
                           {images.map(value=>(
                             <GridItem md={4}>
-                                <img src={require("assets/img/sidebar-1.jpg")} style={{height:"auto", width:"140px" }}/>
+                                <img src={`http://backend-api.martekgh.com/${value.path}`} style={{height:"auto", width:"140px" }}/>
                             </GridItem>
                             ))}
                           </GridContainer>

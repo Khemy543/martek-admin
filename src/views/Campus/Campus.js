@@ -128,7 +128,7 @@ export default function Campus(props) {
 
   React.useEffect(()=>{ 
     setIsActive(true)
-    axios.get("http://backend-api.martekgh.com/api/campuses",
+    axios.get("https://backend-api.martekgh.com/api/campuses",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
@@ -148,7 +148,7 @@ export default function Campus(props) {
 
   const handleSaveCampus=()=>{
     console.log(user)
-    axios.post('http://backend-api.martekgh.com/api/admin/create/campus',
+    axios.post('https://backend-api.martekgh.com/api/admin/create/campus',
     {campus:name},
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{

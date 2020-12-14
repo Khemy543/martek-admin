@@ -71,7 +71,7 @@ export default function Categories(props) {
 
   React.useEffect(()=>{
       setIsActive(true)
-    axios.get("http://backend-api.martekgh.com/api/categories")
+    axios.get("https://backend-api.martekgh.com/api/categories")
     .then(res=>{
         console.log(res.data);
         setCategories(res.data);

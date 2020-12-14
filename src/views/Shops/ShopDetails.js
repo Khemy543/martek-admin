@@ -133,7 +133,7 @@ export default function ShopDetails(props) {
     const [products, setProducts] = React.useState([]);
     const [value, setValue] = React.useState('one');
     const [average, setAverage] = React.useState(0);
-    const [isActive, setIsActive] = React.useState(false);
+    const [isActive, setIsActive] = React.useState(true);
     const [modalStyle] = React.useState(getModalStyle);
     const [deletId, setDeleteId] = React.useState(0);
     const [open, setOpen] = React.useState(false);
@@ -141,7 +141,7 @@ export default function ShopDetails(props) {
 
   React.useEffect(()=>{
     setIsActive(true)
-    axios.get("http://backend-api.martekgh.com/api/admin/get-shop/"+props.location.state.id+"/details",
+    axios.get("https://backend-api.martekgh.com/api/admin/get-shop/"+props.location.state.id+"/details",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);
@@ -149,7 +149,7 @@ export default function ShopDetails(props) {
         setIsActive(false)
     });
 
-    axios.get("http://backend-api.martekgh.com/api/shop/"+props.location.state.id+"/reviews")
+    axios.get("https://backend-api.martekgh.com/api/shop/"+props.location.state.id+"/reviews")
     .then(res=>{
         console.log(res.data);
         setReviews(res.data.product_reviews);
@@ -159,7 +159,7 @@ export default function ShopDetails(props) {
         console.log(error.response.data)
     });
 
-    axios.get("http://backend-api.martekgh.com/api/merchandiser/"+props.location.state.id+"/products")
+    axios.get("https://backend-api.martekgh.com/api/merchandiser/"+props.location.state.id+"/products")
     .then(res=>{
         console.log(res.data);
         setProducts(res.data[0])
@@ -170,7 +170,7 @@ export default function ShopDetails(props) {
   function handleReviewDelete(id){
     setOpen(false)
     let tempProducts =products;
-      axios.delete("http://backend-api.martekgh.com/api/admin/shop-review/"+id+"/delete",
+      axios.delete("https://backend-api.martekgh.com/api/admin/shop-review/"+id+"/delete",
       {headers:{"Authorization":`Bearer ${user}`}})
       .then(res=>{
          let tempReviews = [...reviews];
@@ -180,7 +180,7 @@ export default function ShopDetails(props) {
   }
 
   function handleDeleteProduct(id){
-    axios.delete("http://backend-api.martekgh.com/api/admin/product/"+deletId+"/delete",
+    axios.delete("https://backend-api.martekgh.com/api/admin/product/"+deletId+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data);
@@ -231,7 +231,7 @@ export default function ShopDetails(props) {
   };
 
   const classes = useStyles();
-  const {company_name,company_description, email, phone, shop_type, no_followers, campus,avatar, cover_photo}=detaisl;
+  const {company_name,company_description, email, phone, shop_type, no_followers, campus,avatar, cover_photo, valid_id}=detaisl;
   return (
     <div>
       <GridContainer>
@@ -245,25 +245,29 @@ export default function ShopDetails(props) {
             <CardBody>
               <GridContainer>
               <GridItem md={12}>
-                  <img src={require("assets/img/cover.jpeg")} alt="#" 
+                  <img src={`https://backend-api.martekgh.com/${cover_photo}`} alt="#" 
                   style={{width:"100%",height:"40vh"}}/>
                   <div style={{display:"flex"}}>
-                  <Avatar alt="Remy Sharp" src={require("assets/img/new_logo.png")}
+                  <Avatar alt="Remy Sharp" src={`https://backend-api.martekgh.com/${avatar}`}
                       style={{width:"70px",height:"70px", left: "45%",marginTop:"-80px"}}
                   />
                   </div>
               </GridItem>
               </GridContainer>
                 <GridContainer>
-                  <GridItem md={6} style={{textAlign:"center", fontSize:"12px"}} className="shop_data">
+                  <GridItem md={4} style={{textAlign:"center", fontSize:"12px"}} className="shop_data">
                     <h4 style={{fontWeight:"bold"}}>{email}</h4>
                     <h4 style={{fontWeight:"bold"}}>{phone}</h4>
                     <h4 style={{fontWeight:"bold"}}> {shop_type}</h4>
                   </GridItem>
-                  <GridItem md={6} style={{textAlign:"center",fontSize:"12px"}} className="shop_data">
+                  <GridItem md={4} style={{textAlign:"center",fontSize:"12px"}} className="shop_data">
                     <h4 style={{fontWeight:"bold"}}>{campus}</h4>
                     <h4 style={{fontWeight:"bold"}}><span>No of Followers:</span> {no_followers}</h4>
                     <h4 style={{fontWeight:"bold"}}><span>Average Ratings:</span> {average}</h4>
+                  </GridItem>
+                  <GridItem md={4} style={{textAlign:"center",fontSize:"12px"}} className="shop_data">
+                    <img alt="#" src={`https://backend-api.martekgh.com/${valid_id}`} style={{height:"100px", width:"100px"}}/>
+                    <h4  style={{fontWeight:"bold"}}>Valid ID</h4>
                   </GridItem>
                 </GridContainer>
                 

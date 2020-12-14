@@ -110,14 +110,14 @@ let user = localStorage.getItem('access_token');
 export default function Products(props) {
   const classes = useStyles();
   const [products, setProducts] = React.useState([]);
-  const [isActive, setIsActive] =React.useState(false)
+  const [isActive, setIsActive] =React.useState(true)
   const [modalStyle] = React.useState(getModalStyle);
   const [deletId, setDeleteId] = React.useState(0)
   const [open, setOpen] = React.useState(false);
 
 
   React.useEffect(()=>{
-    axios.get("http://backend-api.martekgh.com/api/category/"+props.location.state.id+"/products")
+    axios.get("https://backend-api.martekgh.com/api/category/"+props.location.state.id+"/products")
     .then(res=>{
         console.log(res.data);
     });
@@ -129,7 +129,7 @@ export default function Products(props) {
   function getProducts(page=1){
     setIsActive(true)
     console.log("page:",page)
-    axios.get("http://backend-api.martekgh.com/api/category/"+props.location.state.id+"/products?page="+page+"")
+    axios.get("https://backend-api.martekgh.com/api/category/"+props.location.state.id+"/products?page="+page+"")
     .then(res=>{
       console.log(res.data)
         setProducts(res.data);
@@ -142,7 +142,7 @@ export default function Products(props) {
 
 function handleDeleteProduct(){
   setOpen(false)
-    axios.delete("http://backend-api.martekgh.com/api/admin/product/"+deletId+"/delete",
+    axios.delete("https://backend-api.martekgh.com/api/admin/product/"+deletId+"/delete",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
         console.log(res.data)

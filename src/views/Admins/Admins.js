@@ -86,11 +86,11 @@ let user = localStorage.getItem('access_token');
 export default function Admins() {
   const classes = useStyles();
   const [admins, setAdmins] = React.useState([]);
-  const [isActive, setIsActive] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(true);
 
   React.useEffect(()=>{
     setIsActive(true);
-    axios.get("http://backend-api.martekgh.com/api/admin/fetch-admins",
+    axios.get("https://backend-api.martekgh.com/api/admin/fetch-admins",
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
@@ -105,7 +105,7 @@ export default function Admins() {
 
   const handleBlockAdmin=(id)=>{
     let tempAdmins = [...admins];
-    axios.post("http://backend-api.martekgh.com/api/admin/"+id+"/block",null,
+    axios.post("https://backend-api.martekgh.com/api/admin/"+id+"/block",null,
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);
@@ -119,7 +119,7 @@ export default function Admins() {
 
   const handleUnBlockAdmin=(id)=>{
     let tempAdmins = [...admins];
-    axios.post("http://backend-api.martekgh.com/api/admin/"+id+"/unblock",null,
+    axios.post("https://backend-api.martekgh.com/api/admin/"+id+"/unblock",null,
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
       console.log(res.data);

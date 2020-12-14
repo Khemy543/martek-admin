@@ -52,7 +52,7 @@ export default function AddAdmin() {
 
   const hanldeSubmit=()=>{
     if(name !== "" || email !=="" || phone !==""){
-    axios.post("http://backend-api.martekgh.com/api/admin/add-new-admin",
+    axios.post("https://backend-api.martekgh.com/api/admin/add-new-admin",
     {name,phone,email},
     {headers:{"Authorization":`Bearer ${user}`}})
     .then(res=>{
