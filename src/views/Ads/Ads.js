@@ -182,7 +182,7 @@ axios.get(`https://backend-api.martekgh.com/api/admin/campus/${id}/carousel-imag
             </CardHeader>
           <div className='video-preview'>
           <div className='image-container' style={{textAlign:"center"}}>
-            <img src={require("assets/img/sidebar-2.jpg")} style={{height:"230px", width:"auto"}}/>
+            <img src={`https://backend-api.martekgh.com/${value.image_path}`} style={{height:"230px", width:"auto"}}/>
           </div>
         </div>
          </Card>
